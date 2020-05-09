@@ -74,7 +74,7 @@ public class GameArea extends JPanel {
 	//Returns the view center of view in level space
 	private List<Integer> getViewCenter(){
 		if(this.dynamicViewCenter) {
-			if(this.level.objects.contains(this.fixedViewCenter)) {
+			if(this.fixedViewCenter.level==this.level) {
 				return Arrays.asList((int) this.fixedViewCenter.x+this.viewCenterOffsetX,(int)this.fixedViewCenter.y+this.viewCenterOffsetY);
 			}
 			else{

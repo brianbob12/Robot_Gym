@@ -19,16 +19,16 @@ public class Level {
 	
 	public List<GameObject> objects=new ArrayList<GameObject>();
 	public float gravity=(float) 0.1;
+	public float endGoal;//the x value that shows the end of the level
 	
 	public Level() {
 		//this represents the size of the co-ordinate space in this level. This is only positive and starts from the bottom left. 
 	}
+	//I think I might need this later
 	public void addObject(GameObject obj) {
 		this.objects.add(obj);
-		if(obj.gravity) {
-			obj.gravVal=gravity;
-		}
 	}
+	//physics update
 	public void step() {
 		for(int i=0;i<this.objects.size();i++) {
 			GameObject sel=this.objects.get(i);

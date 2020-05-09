@@ -19,26 +19,26 @@ import java.util.List;
 public class GameObject {
 	
 	//dynamics
-	float x;//x level-space position(this differs from position on screen)
-	float y;//y level-space position
-	float width;
-	float height;
-	float vx;
-	float vy;
-	float gravVal;//value of the acceleration due to gravity
-	boolean gravity;//is it affected by gravity
-	boolean collidable=true;
-	boolean moveable;//Weather this object is able to be moved
-	Color color=null;//null if object is immovable
+	public float x;//x level-space position(this differs from position on screen)
+	public float y;//y level-space position
+	public float width;
+	public float height;
+	public float vx;
+	public float vy;
+	public boolean gravity;//is it affected by gravity
+	public boolean collidable=true;
+	public boolean moveable;//Weather this object is able to be moved
+	public Color color=null;//null if object is immovable
+	public Level level;
 	
 	//hitting
 	//These store if the object is colliding in any directions
-	boolean hitUp=false;//e.g. if this is colliding with an object from above
-	boolean hitDown=false;
-	boolean hitLeft=false;
-	boolean hitRight=false;
+	private boolean hitUp=false;//e.g. if this is colliding with an object from above
+	private boolean hitDown=false;
+	private boolean hitLeft=false;
+	private boolean hitRight=false;
 	
-	public GameObject(float x,float y,float width,float height,boolean gravity,boolean moveable) {
+	public GameObject(float x,float y,float width,float height,boolean gravity,boolean moveable,Level level) {
 		this.x=x;
 		this.y=y;
 		this.width=width;
@@ -47,40 +47,41 @@ public class GameObject {
 		this.vy=0;
 		this.gravity=gravity;
 		this.moveable=moveable;
+		this.level=level;
 	}
 	
 	//update position
 	public void move() {
 		
-		if (this.gravity) {
-			this.vy-=gravVal;
+		if (this.gravity&&!this.hitDown) {
+			this.vy-=level.gravity;
 		}
 		if(this.vx<0) {
-			if(hitLeft) {
+			if(this.hitLeft) {
 				this.vx=0;
 			}
 		}
 		else{
-			if(hitRight) {
+			if(this.hitRight) {
 				this.vx=0;
 			}
 		}
 		if(this.vy<0) {
-			if(hitDown) {
+			if(this.hitDown) {
 				this.vy=0;
 			}
 		}
 		else{
-			if(hitUp) {
+			if(this.hitUp) {
 				this.vy=0;
 			}
 		}
 		this.x+=this.vx;
 		this.y+=this.vy;
-		hitUp=false;
-		hitDown=false;
-		hitLeft=false;
-		hitRight=false;
+		this.hitUp=false;
+		this.hitDown=false;
+		this.hitLeft=false;
+		this.hitRight=false;
 	}
 	
 	//reverses position by one frame used for resolving collisions
@@ -89,7 +90,7 @@ public class GameObject {
 		float newvy=-this.vy/fraction;
 		
 		if (this.gravity) {
-			newvy+=gravVal;
+			newvy+=level.gravity;
 		}
 		if(newvx<0) {
 			if(hitLeft) {
@@ -122,12 +123,7 @@ public class GameObject {
 			if(this.x<=hit.x+hit.width&&this.x>=hit.x&&this.y<=hit.y+hit.height&&this.y>=hit.y) {
 				//collision detected
 				float colFract;
-				if (Math.abs(this.vx)<Math.abs(this.vy)){
-					colFract=Math.abs(vy)*20;
-				}
-				else {
-					colFract=Math.abs(vx)*20;
-				}
+				colFract=(float) 10;
 				while((this.x<=hit.x+hit.width&&this.y<=hit.y+hit.height)&&(hit.x<=this.x+this.width&&hit.y<=this.y+this.height)) {
 					this.backstep(colFract);
 				}
