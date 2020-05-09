@@ -17,9 +17,29 @@ import java.util.List;
 
 public class Level {
 	
-	List<GameObject> objects=new ArrayList<GameObject>();
+	public List<GameObject> objects=new ArrayList<GameObject>();
+	public float gravity=(float) 0.1;
 	
 	public Level() {
 		//this represents the size of the co-ordinate space in this level. This is only positive and starts from the bottom left. 
+	}
+	public void addObject(GameObject obj) {
+		this.objects.add(obj);
+		if(obj.gravity) {
+			obj.gravVal=gravity;
+		}
+	}
+	public void step() {
+		for(int i=0;i<this.objects.size();i++) {
+			GameObject sel=this.objects.get(i);
+			if(sel.moveable) {
+				sel.move();
+				for(int j=0;j<objects.size();j++) {
+					if(i!=j) {//avoid self collisions
+						sel.collide(this.objects.get(j));
+					}
+				}
+			}
+		}
 	}
 }

@@ -36,8 +36,12 @@ public class GameArea extends JPanel {
 	
 	public GameArea(Level level) {
 		this.level=level;
-		this.setBackground(Color.black);
+		//this.setBackground(Color.black);
+		repaint();
 		
+	}
+	
+	public void paint(Graphics g) {
 		//establish bounds of vision in level space
 		List<Integer> viewBounds=getViewCenter();
 		int xLOW=viewBounds.get(0);
@@ -46,14 +50,23 @@ public class GameArea extends JPanel {
 		int yUP=xLOW+viewY;
 		viewBounds=null;//needless space
 		
+		int convRatioX=this.getWidth()/this.viewX;
+		int convRatioY=this.getHeight()/this.viewY;
+				
 		//for each object
 		for(int i=0;i<this.level.objects.size();i++) {
 			
 			GameObject sel=this.level.objects.get(i);//selected object
 			
 			//check if it is in bounds
-			if(sel.x>xLOW&&sel.x<xUP&&sel.y>yLOW&&sel.y<yUP) {
+			if((sel.x+sel.width>xLOW&&sel.y+sel.height>yLOW)||(sel.x<xUP&&sel.y<yUP)) {
 				//draw sel
+				if(sel.color!=null) {
+					g.setColor(sel.color);
+				}
+				//if the color is null it will be drawn with the last previously drawn color
+				//although this is not likely to occur.
+				g.fillRect((int)(sel.x-xLOW)*convRatioX,(int) (this.getHeight()-(sel.y-xLOW)*convRatioY),(int)sel.width*convRatioX,(int)sel.height*convRatioY);
 			}
 		}
 	}
