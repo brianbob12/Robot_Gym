@@ -19,7 +19,9 @@ public class Competitor extends Destructible {
 	public float xOffset;//holds the original x position of the Competitor for score calculations.
 	public boolean finished;
 	public float speed=(float)0.6;//walking speed of competitor
-	public float jumpForce=(float) 1.0;//velocity added through jumping
+	public float jumpForce=(float) 2.0;//velocity added through jumping
+	public int jumpDelay=5;
+	private int jumpCount=0;
 	
 	public Competitor(float x, float y, float width, float height,Level level, float maxHealth) {
 		super(x, y, width, height, true, true,level,maxHealth);
@@ -41,8 +43,12 @@ public class Competitor extends Destructible {
 			else if(actionA==2){
 				this.vx=-this.speed;
 			}
-			if(actionB==1&&!this.hitDown) {
+			if(this.onPlatform()) {
+				this.jumpCount+=1;
+			}
+			if(actionB==1&&this.jumpCount>=this.jumpDelay) {
 				this.vy=this.jumpForce;
+				this.jumpCount=0;
 			}
 			super.move();
 			if(this.x>level.endGoal) {
@@ -66,7 +72,19 @@ public class Competitor extends Destructible {
 		return out;
 	}
 	
-	//thease only exists for the subclasses
+	public boolean onPlatform() {
+		for(int i=0;i<this.level.objects.size();i++) {//iterate over objects
+			GameObject sub=this.level.objects.get(i);
+			if((sub.x<this.x&&this.x<sub.x+sub.width)||(sub.x<this.x+this.width&&this.x+this.width<sub.x+sub.width)||(this.x<sub.x&&sub.x<this.x+this.width)||(this.x<sub.x+sub.width&&sub.x+sub.width<this.x+this.width)) {//check if on platform with respect to x
+				if(this.y==sub.y+sub.height) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	//these only exists for the subclasses
 	public int choseActionA() {
 		return 0;
 	}

@@ -31,12 +31,6 @@ public class GameObject {
 	public Color color=null;//null if object is immovable
 	public Level level;
 	
-	//hitting
-	//These store if the object is colliding in any directions
-	public boolean hitUp=false;//e.g. if this is colliding with an object from above
-	public boolean hitDown=false;
-	public boolean hitLeft=false;
-	public boolean hitRight=false;
 	
 	public GameObject(float x,float y,float width,float height,boolean gravity,boolean moveable,Level level) {
 		this.x=x;
@@ -53,38 +47,15 @@ public class GameObject {
 	//update position
 	public void move() {
 		
-		if (this.gravity&&!this.hitDown) {
+		if (this.gravity) {
 			this.vy-=level.gravity;
-		}
-		if(this.vx<0) {
-			if(this.hitLeft) {
-				this.vx=0;
-			}
-		}
-		else{
-			if(this.hitRight) {
-				this.vx=0;
-			}
-		}
-		if(this.vy<0) {
-			if(this.hitDown) {
-				this.vy=0;
-			}
-		}
-		else{
-			if(this.hitUp) {
-				this.vy=0;
-			}
 		}
 		this.x+=this.vx;
 		this.y+=this.vy;
-		this.hitUp=false;
-		this.hitDown=false;
-		this.hitLeft=false;
-		this.hitRight=false;
 	}
 	
 	//reverses position by one frame used for resolving collisions
+	//only reveres x if x needs to be  backsteped,same with y
 	public void backstep(float fraction,boolean moveX,boolean moveY) {
 		if(moveY) {
 			float newvy=-this.vy/fraction;
@@ -105,9 +76,13 @@ public class GameObject {
 		if(this.collidable&&hit.collidable) {
 			if(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
 				//collision detected
+				
+				//determine responsibility for collision 
 				if(!this.movingTowards(hit)) {
-					hit.collide(this);
+					hit.collide(this);//hit needs to backstep
 				}
+				
+				//resolve collision
 				float colFract;
 				colFract=(float) 10;
 				while(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
@@ -120,6 +95,7 @@ public class GameObject {
 				float up=Math.abs(this.y+this.height-hit.y);
 				float down=Math.abs(this.y-(hit.y+hit.height));
 				float side=Math.min(Math.min(right, left),Math.min(up,down));
+				//remove velocity on the collided side
 				if(right==side||left==side) {
 					this.vx=0;
 					if(left==side){
@@ -142,17 +118,17 @@ public class GameObject {
 		}
 	}
 	
-	public boolean pointInBox(float x,float y,GameObject hit) {
+	public boolean pointInBox(float x,float y,GameObject hit) {//tests a a corner is overlapping a GameObject
 		return (x<hit.x+hit.width&&x>hit.x&&y<hit.y+hit.height&&y>hit.y);
 	}
-	public boolean movingX(GameObject hit) {
+	public boolean movingX(GameObject hit) {//tests if this is moving towards hit in the x direction
 		if(this.vx>0) {
-			if(hit.x<this.x) {
+			if(hit.x<this.x+this.width-this.vx) {
 				return false;
 			}
 		}
 		else if(this.vx<0) {
-			if(hit.x>this.x) {
+			if(hit.x+hit.width>this.x-this.vx) {
 				return false;
 			}
 		}
@@ -163,12 +139,12 @@ public class GameObject {
 	}
 	public boolean movingY(GameObject hit) {
 		if(this.vy>0) {
-			if(hit.y<this.y) {
+			if(hit.y<this.y+this.height-this.vy) {
 				return false;
 			}
 		}
 		else if(this.vy<0) {
-			if(hit.y>this.y) {
+			if(hit.y+hit.height>this.y-this.vy) {
 				return false;
 			}
 		}

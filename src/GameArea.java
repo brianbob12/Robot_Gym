@@ -26,11 +26,11 @@ public class GameArea extends JPanel {
 	int viewY=100;//how far the gameArea is allowed to show in the Level-y direction
 	
 	//the viewCenterX/Y store the *STATIC* view center
-	int viewCenterX=0;
-	int viewCenterY=0;
+	float viewCenterX=0;
+	float viewCenterY=0;
 	
-	int viewCenterOffsetX=0;
-	int viewCenterOffsetY=0;
+	float viewCenterOffsetX=0;
+	float viewCenterOffsetY=0;
 	boolean dynamicViewCenter=false;//Weather the view center is fixed to an object
 	GameObject fixedViewCenter;//be careful that this is in the correct level
 	
@@ -43,15 +43,15 @@ public class GameArea extends JPanel {
 	
 	public void paint(Graphics g) {
 		//establish bounds of vision in level space
-		List<Integer> viewBounds=getViewCenter();
-		int xLOW=viewBounds.get(0);
-		int yLOW=viewBounds.get(1);
-		int xUP=xLOW+viewX;
-		int yUP=xLOW+viewY;
+		List<Float> viewBounds=getViewCenter();
+		float xLOW=viewBounds.get(0);
+		float yLOW=viewBounds.get(1);
+		float xUP=xLOW+this.viewX;
+		float yUP=xLOW+this.viewY;
 		viewBounds=null;//needless space
 		
-		int convRatioX=this.getWidth()/this.viewX;
-		int convRatioY=this.getHeight()/this.viewY;
+		float convRatioX=this.getWidth()/this.viewX;
+		float convRatioY=this.getHeight()/this.viewY;
 				
 		//for each object
 		for(int i=0;i<this.level.objects.size();i++) {
@@ -66,16 +66,16 @@ public class GameArea extends JPanel {
 				}
 				//if the color is null it will be drawn with the last previously drawn color
 				//although this is not likely to occur.
-				g.fillRect((int)(sel.x-xLOW)*convRatioX,(int) (this.getHeight()-(sel.y-xLOW)*convRatioY),(int)sel.width*convRatioX,-(int)sel.height*convRatioY);
+				g.fillRect((int)((sel.x-xLOW)*convRatioX),(int) (this.getHeight()-(sel.y-yLOW)*convRatioY),(int)(sel.width*convRatioX),-(int)(sel.height*convRatioY));
 			}
 		}
 	}
 	
 	//Returns the view center of view in level space
-	private List<Integer> getViewCenter(){
+	private List<Float> getViewCenter(){
 		if(this.dynamicViewCenter) {
 			if(this.fixedViewCenter.level==this.level) {
-				return Arrays.asList((int) this.fixedViewCenter.x+this.viewCenterOffsetX,(int)this.fixedViewCenter.y+this.viewCenterOffsetY);
+				return Arrays.asList(this.fixedViewCenter.x+this.viewCenterOffsetX,this.fixedViewCenter.y+this.viewCenterOffsetY);
 			}
 			else{
 				System.out.println("attempting to center object not in level");

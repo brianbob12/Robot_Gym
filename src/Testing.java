@@ -29,7 +29,7 @@ public class Testing {
 		frame.addKeyListener(myKeyboard);
 		
 		Level testingLevel=new Level();
-		GameObject player=new Player(10,100,testingLevel,myKeyboard);
+		GameObject player=new Player(10,45,testingLevel,myKeyboard);
 		player.color=Color.red;
 		GameObject bloc2=new GameObject(50,100,10,10,true,true,testingLevel);
 		bloc2.color=Color.blue;
@@ -37,18 +37,26 @@ public class Testing {
 		GameObject bloc3=new GameObject(32,100,10,10,true,true,testingLevel);
 		bloc3.color=Color.magenta;
 		bloc3.vy=(float)1.0;
-		GameObject floor=new GameObject(0,30,90,10,false,false,testingLevel);
+		GameObject bloc4=new GameObject(100,50,10,30,true,true,testingLevel);
+		bloc4.color=Color.cyan;
+		GameObject floor=new GameObject(0,30,200,10,false,false,testingLevel);
 		floor.color=Color.black;
 		testingLevel.addObject(player);
 		testingLevel.addObject(bloc2);
 		testingLevel.addObject(bloc3);
+		testingLevel.addObject(bloc4);
 		testingLevel.addObject(floor);
 		testingLevel.endGoal=300;
+		testingLevel.startPosition=0;
 		
 		GameArea testingLevelView=new GameArea(testingLevel);
 		testingLevelView.setBounds(0,0,800,800);
 		testingLevelView.setLayout(null);
 		testingLevelView.setVisible(true);
+		testingLevelView.fixedViewCenter=player;
+		testingLevelView.dynamicViewCenter=true;
+		testingLevelView.viewCenterOffsetY=-30;
+		testingLevelView.viewCenterOffsetX=-50;
 		frame.add(testingLevelView);
 		
 		
