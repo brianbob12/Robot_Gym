@@ -35,14 +35,13 @@ public class Competitor extends Destructible {
 			int actionB=this.choseActionB();
 			int actionC=this.choseActionC();
 			this.vx=0;
-			this.vy=0;
 			if (actionA==1) {
 				this.vx=this.speed;
 			}
 			else if(actionA==2){
 				this.vx=-this.speed;
 			}
-			if(actionB==1) {
+			if(actionB==1&&!this.hitDown) {
 				this.vy=this.jumpForce;
 			}
 			super.move();

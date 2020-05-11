@@ -25,10 +25,12 @@ public class Testing {
 		frame.setSize(1000,1000);
 		frame.setLayout(null);
 		frame.setVisible(true);
+		Keyboard myKeyboard=new Keyboard();
+		frame.addKeyListener(myKeyboard);
 		
 		Level testingLevel=new Level();
-		GameObject bloc1=new GameObject(10,100,10,10,true,true,testingLevel);
-		bloc1.color=Color.red;
+		GameObject player=new Player(10,100,testingLevel,myKeyboard);
+		player.color=Color.red;
 		GameObject bloc2=new GameObject(50,100,10,10,true,true,testingLevel);
 		bloc2.color=Color.blue;
 		bloc2.vx=(float)-0.5;
@@ -37,16 +39,18 @@ public class Testing {
 		bloc3.vy=(float)1.0;
 		GameObject floor=new GameObject(0,30,90,10,false,false,testingLevel);
 		floor.color=Color.black;
-		testingLevel.addObject(bloc1);
+		testingLevel.addObject(player);
 		testingLevel.addObject(bloc2);
 		testingLevel.addObject(bloc3);
 		testingLevel.addObject(floor);
+		testingLevel.endGoal=300;
 		
 		GameArea testingLevelView=new GameArea(testingLevel);
 		testingLevelView.setBounds(0,0,800,800);
 		testingLevelView.setLayout(null);
 		testingLevelView.setVisible(true);
 		frame.add(testingLevelView);
+		
 		
 		//running the game
 		int physicsUpdate=20;//number of milliseconds between physics Updates

@@ -33,10 +33,10 @@ public class GameObject {
 	
 	//hitting
 	//These store if the object is colliding in any directions
-	private boolean hitUp=false;//e.g. if this is colliding with an object from above
-	private boolean hitDown=false;
-	private boolean hitLeft=false;
-	private boolean hitRight=false;
+	public boolean hitUp=false;//e.g. if this is colliding with an object from above
+	public boolean hitDown=false;
+	public boolean hitLeft=false;
+	public boolean hitRight=false;
 	
 	public GameObject(float x,float y,float width,float height,boolean gravity,boolean moveable,Level level) {
 		this.x=x;
@@ -85,63 +85,100 @@ public class GameObject {
 	}
 	
 	//reverses position by one frame used for resolving collisions
-	public void backstep(float fraction) {
-		float newvx=-this.vx/fraction;
-		float newvy=-this.vy/fraction;
-		
-		if (this.gravity) {
-			newvy+=level.gravity;
-		}
-		if(newvx<0) {
-			if(hitLeft) {
-				newvx=0;
+	public void backstep(float fraction,boolean moveX,boolean moveY) {
+		if(moveY) {
+			float newvy=-this.vy/fraction;
+			if (this.gravity) {
+				newvy+=level.gravity;
 			}
+			this.y+=newvy;
 		}
-		else{
-			if(hitRight) {
-				newvx=0;
-			}
+		if(moveX) {
+			float newvx=-this.vx/fraction;
+			this.x+=newvx;
 		}
-		if(this.vy<0) {
-			if(hitDown) {
-				newvy=0;
-			}
-		}
-		else{
-			if(hitUp) {
-				newvy=0;
-			}
-		}
-		this.x+=newvx;
-		this.y+=newvy;
 	}
 	
 	//check for collision and resolve collision
 	//Returns whether the objects are in collision
 	public void collide(GameObject hit) {
-		if(this.collidable) {
-			if(this.x<=hit.x+hit.width&&this.x>=hit.x&&this.y<=hit.y+hit.height&&this.y>=hit.y) {
+		if(this.collidable&&hit.collidable) {
+			if(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
 				//collision detected
+				if(!this.movingTowards(hit)) {
+					hit.collide(this);
+				}
 				float colFract;
 				colFract=(float) 10;
-				while((this.x<=hit.x+hit.width&&this.y<=hit.y+hit.height)&&(hit.x<=this.x+this.width&&hit.y<=this.y+this.height)) {
-					this.backstep(colFract);
+				while(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
+					this.backstep(colFract,this.movingX(hit),this.movingY(hit));
 				}
 				
-				//update hits
-				if(this.x>hit.x+hit.width) {
-					this.hitLeft=true;
+				//find collided side
+				float right=Math.abs((this.x+this.width)-hit.x);
+				float left=Math.abs(this.x-(hit.x+hit.width));
+				float up=Math.abs(this.y+this.height-hit.y);
+				float down=Math.abs(this.y-(hit.y+hit.height));
+				float side=Math.min(Math.min(right, left),Math.min(up,down));
+				if(right==side||left==side) {
+					this.vx=0;
+					if(left==side){
+						this.x=hit.x+hit.width;
+					}
+					else {
+						this.x=hit.x-this.width;
+					}
 				}
-				else if(this.x+this.width<hit.x) {
-					this.hitRight=true;
-				}
-				else if(this.y>hit.y+hit.height) {
-					this.hitDown=true;
-				}
-				else if(this.y+this.height<hit.y) {
-					this.hitUp=true;
+				else if(up==side||down==side){
+					this.vy=0;
+					if(down==side){
+						this.y=hit.y+hit.height;
+					}
+					else {
+						this.y=hit.y-this.height;
+					}
 				}
 			}
 		}
+	}
+	
+	public boolean pointInBox(float x,float y,GameObject hit) {
+		return (x<hit.x+hit.width&&x>hit.x&&y<hit.y+hit.height&&y>hit.y);
+	}
+	public boolean movingX(GameObject hit) {
+		if(this.vx>0) {
+			if(hit.x<this.x) {
+				return false;
+			}
+		}
+		else if(this.vx<0) {
+			if(hit.x>this.x) {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+		return true;
+	}
+	public boolean movingY(GameObject hit) {
+		if(this.vy>0) {
+			if(hit.y<this.y) {
+				return false;
+			}
+		}
+		else if(this.vy<0) {
+			if(hit.y>this.y) {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean movingTowards(GameObject hit) {
+		return (this.movingX(hit)||this.movingY(hit));
 	}
 }

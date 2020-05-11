@@ -66,7 +66,7 @@ public class GameArea extends JPanel {
 				}
 				//if the color is null it will be drawn with the last previously drawn color
 				//although this is not likely to occur.
-				g.fillRect((int)(sel.x-xLOW)*convRatioX,(int) (this.getHeight()-(sel.y-xLOW)*convRatioY),(int)sel.width*convRatioX,(int)sel.height*convRatioY);
+				g.fillRect((int)(sel.x-xLOW)*convRatioX,(int) (this.getHeight()-(sel.y-xLOW)*convRatioY),(int)sel.width*convRatioX,-(int)sel.height*convRatioY);
 			}
 		}
 	}
