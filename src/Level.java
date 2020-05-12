@@ -18,6 +18,7 @@ import java.util.List;
 public class Level {
 	
 	public List<GameObject> objects=new ArrayList<GameObject>();//stores the gameobjects in the level
+	public List<Agent> agents=new ArrayList<Agent>();
 	public float gravity=(float) 0.1;
 	public float endGoal;//the x value that shows the end of the level
 	float startPosition;

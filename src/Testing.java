@@ -65,6 +65,7 @@ public class Testing {
 		long lastPhysicsUpdate=0;
 		int frameUpdate=20;//number of milliseconds between frame updates
 		long lastFrameUpdate=20;
+		int agentUpdate=10*physicsUpdate;
 		while(true) {
 			if(System.currentTimeMillis()%physicsUpdate==0&&System.currentTimeMillis()!=lastPhysicsUpdate) {
 				lastPhysicsUpdate=System.currentTimeMillis();

@@ -30,6 +30,7 @@ public class GameObject {
 	public boolean moveable;//Weather this object is able to be moved
 	public Color color=null;//null if object is immovable
 	public Level level;
+	public String objectClass="walkable";
 	
 	
 	public GameObject(float x,float y,float width,float height,boolean gravity,boolean moveable,Level level) {
