@@ -106,8 +106,12 @@ public class GameObject {
 			System.out.println("collision recursion error");
 			return;
 		}
+		//disable ally collisions
+		if(this.objectClass=="ally"&&hit.objectClass=="ally") {
+			return;
+		}
 		if(this.collidable&&hit.collidable) {
-			if(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
+			if(this.colliding(hit)) {
 				//collision detected
 				
 				//determine responsibility for collision 
@@ -118,7 +122,7 @@ public class GameObject {
 					//the emergency backsetep
 					else {
 						float colFract=10F;
-						while(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
+						while(this.colliding(hit)) {
 							this.backstep(colFract,true,true);
 						}
 					}
@@ -126,7 +130,7 @@ public class GameObject {
 				
 				//resolve collision
 				float colFract=10F;
-				while(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
+				while(this.colliding(hit)) {
 					this.backstep(colFract,this.movingX(hit),this.movingY(hit));
 				}
 				
@@ -159,8 +163,19 @@ public class GameObject {
 		}
 	}
 	
-	public boolean pointInBox(float x,float y,GameObject hit) {//tests a a corner is overlapping a GameObject
-		return (x<hit.x+hit.width&&x>hit.x&&y<hit.y+hit.height&&y>hit.y);
+	//tests if this is overlapping with hit
+	public boolean colliding(GameObject hit) {
+		//check for x edges overlapping
+		boolean xa=(hit.x<this.x+this.width&&hit.x>this.x)||(hit.x+hit.width<this.x+this.width&&hit.x>this.x);
+		boolean xb=(this.x<hit.x+hit.width&&this.x>hit.x)||(this.x+this.width<hit.x+hit.width&&this.x>hit.x);
+		boolean ya=(hit.y<this.y+this.height&&hit.y>this.y)||(hit.y+hit.height<this.y+this.height&&hit.y+hit.height>this.y);
+		boolean yb=(this.y<hit.y+hit.height&&this.y>hit.y)||(this.y+this.height<hit.y+hit.height&&this.y+this.height>hit.y);
+		if(xa||xb) {
+			if(ya||yb) {
+				return true;
+			}
+		}
+		return false;
 	}
 	public boolean movingX(GameObject hit) {//tests if this is moving towards hit in the x direction
 		if(this.vx>0) {
