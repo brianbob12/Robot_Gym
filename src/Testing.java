@@ -8,6 +8,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.*;
 
 /**
  * Testing 
@@ -27,19 +28,20 @@ public class Testing {
 		frame.setVisible(true);
 		Keyboard myKeyboard=new Keyboard();
 		frame.addKeyListener(myKeyboard);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		Level testingLevel=new Level();
-		GameObject player=new Player(10,45,testingLevel,myKeyboard);
+		GameObject player=new Player(110,45,testingLevel,myKeyboard);
 		player.color=Color.red;
-		GameObject bloc2=new GameObject(50,100,10,10,true,true,testingLevel);
+		GameObject bloc2=new GameObject(150,100,10,10,true,true,testingLevel);
 		bloc2.color=Color.blue;
 		bloc2.vx=(float)-0.5;
-		GameObject bloc3=new GameObject(32,100,10,10,true,true,testingLevel);
+		GameObject bloc3=new GameObject(132,100,10,10,true,true,testingLevel);
 		bloc3.color=Color.magenta;
 		bloc3.vy=(float)1.0;
-		GameObject bloc4=new GameObject(100,50,10,30,true,true,testingLevel);
+		GameObject bloc4=new GameObject(200,50,10,30,true,true,testingLevel);
 		bloc4.color=Color.cyan;
-		GameObject floor=new GameObject(0,30,200,10,false,false,testingLevel);
+		GameObject floor=new GameObject(100,30,200,10,false,false,testingLevel);
 		floor.color=Color.black;
 		testingLevel.addObject(player);
 		testingLevel.addObject(bloc2);
@@ -60,6 +62,7 @@ public class Testing {
 		frame.add(testingLevelView);
 		
 		
+		
 		//running the game
 		int physicsUpdate=20;//number of milliseconds between physics Updates
 		long lastPhysicsUpdate=0;
@@ -75,6 +78,10 @@ public class Testing {
 				lastFrameUpdate=System.currentTimeMillis();
 				testingLevelView.repaint();
 				frame.repaint();
+			}
+			//it is important that agent update is done after a physics update because of the grids
+			if(System.currentTimeMillis()%agentUpdate==0&&System.currentTimeMillis()!=lastPhysicsUpdate) {
+				
 			}
 		}
 		

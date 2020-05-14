@@ -15,9 +15,9 @@ public class GridCell {
 	private int enemy;//has enemy activated cell
 	private int walkable;//has walkable activated cell
 	private int deadly;//has a deadly object activated cell
-	
+	private List<GameObject> attributers;//list of GameObjects that are activate the cell
 	public GridCell() {
-		//nothing here
+		this.attributers=new ArrayList<GameObject>();
 	}
 	//export int[3] encoded cell info ready for neural nets
 	public int[] export(){
@@ -33,4 +33,8 @@ public class GridCell {
 	public void setDeadly(int newVal) {
 		this.walkable=newVal;
 	}
+	public List<GameObject> getAttributers(){
+		return this.attributers;
+	}
+	
 }

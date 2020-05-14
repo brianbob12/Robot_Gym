@@ -33,7 +33,11 @@ public class Competitor extends Destructible {
 	
 	//updates the movement score & check for finished
 	public void move() {
+		float oldX=this.x;
+		float oldY=this.y;
+		
 		if(!this.finished) {
+			
 			int actionA=this.choseActionA();
 			int actionB=this.choseActionB();
 			int actionC=this.choseActionC();

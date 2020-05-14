@@ -36,11 +36,6 @@ public class Level {
 			GameObject sel=this.objects.get(i);
 			if(sel.moveable) {
 				sel.move();
-				for(int j=0;j<objects.size();j++) {
-					if(i!=j) {//avoid self collisions
-						sel.collide(this.objects.get(j));
-					}
-				}
 			}
 		}
 	}

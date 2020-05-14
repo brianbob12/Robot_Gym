@@ -31,6 +31,7 @@ public class GameObject {
 	public Color color=null;//null if object is immovable
 	public Level level;
 	public String objectClass="walkable";
+	public boolean moved;//stores whether this object moved this frame
 	
 	
 	public GameObject(float x,float y,float width,float height,boolean gravity,boolean moveable,Level level) {
@@ -47,17 +48,43 @@ public class GameObject {
 	
 	//update position
 	public void move() {
-		
+		float oldX=this.x;
+		float oldY=this.y;
 		if (this.gravity) {
-			this.vy-=level.gravity;
+			this.vy-=this.level.gravity;
 		}
 		this.x+=this.vx;
 		this.y+=this.vy;
+		
+		//NEGITIVE LEVEL CO-ORDINATEAS BREAK EVERYTHIGN
+		if(this.x<0) {this.x=0;}
+		if(this.y<0) {this.y=0;}
+		
+		this.collisionCheck();
+		
+		//check for moved
+		if(oldX==this.x&&oldY==this.y) {
+			this.moved=true;
+		}
+		else {
+			this.moved=false;
+		}
+		if(this.x<0) {this.x=0;}
+		if(this.y<0) {this.y=0;}
+	}
+	
+	public void collisionCheck() {
+		//check for collisions
+		for(int j=0;j<this.level.objects.size();j++) {
+			if(this!=this.level.objects.get(j)) {//avoid self collisions
+				this.collide(this.level.objects.get(j),0);
+			}
+		}
 	}
 	
 	//reverses position by one frame used for resolving collisions
 	//only reveres x if x needs to be  backsteped,same with y
-	public void backstep(float fraction,boolean moveX,boolean moveY) {
+	private void backstep(float fraction,boolean moveX,boolean moveY) {
 		if(moveY) {
 			float newvy=-this.vy/fraction;
 			if (this.gravity) {
@@ -73,19 +100,32 @@ public class GameObject {
 	
 	//check for collision and resolve collision
 	//Returns whether the objects are in collision
-	public void collide(GameObject hit) {
+	//the depth is a safety system for stack overflow errors
+	public void collide(GameObject hit,int depth) {
+		if(depth>1) {
+			System.out.println("collision recursion error");
+			return;
+		}
 		if(this.collidable&&hit.collidable) {
 			if(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
 				//collision detected
 				
 				//determine responsibility for collision 
 				if(!this.movingTowards(hit)) {
-					hit.collide(this);//hit needs to backstep
+					if(depth<1) {
+						hit.collide(this,depth+1);//hit needs to backstep
+					}
+					//the emergency backsetep
+					else {
+						float colFract=10F;
+						while(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
+							this.backstep(colFract,true,true);
+						}
+					}
 				}
 				
 				//resolve collision
-				float colFract;
-				colFract=(float) 10;
+				float colFract=10F;
 				while(pointInBox(this.x,this.y,hit)||pointInBox(this.x+this.width,this.y,hit)||pointInBox(this.x,this.y+this.height,hit)||pointInBox(this.x+this.width,this.y+this.height,hit)) {
 					this.backstep(colFract,this.movingX(hit),this.movingY(hit));
 				}
