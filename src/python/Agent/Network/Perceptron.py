@@ -6,9 +6,11 @@
 #
 
 #dependencies
-from tensorflow import (Variable,function,matmul,constant)#this line is too slow
+#only importing the bare minimum to save runtime
+from tensorflow import (Variable,function,matmul,constant,GradientTape)#this line is too slow
 from tensorflow.random import truncated_normal
-from tensorflow.keras import regularizers
+from tensorflow.keras.regularizers import l2
+from tensorflow.keras.optimizers import Adam
 from tensorflow.nn import relu,sigmoid
 import numpy#this is actually a dependancy of tensorflow
 
@@ -17,7 +19,7 @@ import numpy#this is actually a dependancy of tensorflow
 #
 #This class holds a single neural netowork(MLP) with some parts of the training protocol.
 #As well as export and import protocols.
-# Trained using Adam Optimiser.
+# Trained using stocastic gradient decent(specifically Adam Optimiser).
 #
 
 class Perceptron:
@@ -50,6 +52,14 @@ class Perceptron:
         self.biases.append(Variable(constant(biasInit,shape=[outputSize])))
         self.weights.append(Variable(truncated_normal([nHidden[-1],outputSize],stddev=0.1)))
 
+    #returns a list of pointers to trainable variables
+    def getTrainableVariables(self):
+        out=[]
+        for i in range(len(self.nHidden)+1):
+            out.append(self.weights[i])
+            out.append(self.biases[i])
+        return out
+
     #liniar function returns iput
     @function
     def liniar(self,x):
@@ -69,12 +79,25 @@ class Perceptron:
         return layerVals[-1]
 
     #train a nerual netwrok to fit the data provided
-    def train(self,X,Y):
+    def train(self,X,Y,learningRate):
         #apply L2 regularization to avoid overfitting
         #this is really really important
-        regularizer=regularizers.l2(self.L2val)
+        regularizer=l2(self.L2val)#just ot be clear this is tf.keras.regularizers.l2
         regularizer(self.weights)
 
-        #calculate error
-        guess=self.evaluate(X)
-        #calculate error using MSE
+        #compute gradients of weights and biases
+        with GradientTape() as g:
+            for i in range(len(self.nHidden)+1):#iterate over layers
+                g.watch(self.getTrainableVariables())
+
+            #calculate error
+            guess=self.evaluate(X)
+            #calculate error using MSE
+            error=0
+            for i in range(len(Y)):
+                error+=(guess[i]-Y[i])**2
+            error=error/len(Y)
+
+        optimizer=Adam(learningRate)
+        grads=g.gradient(error,self.getTrainableVariables())
+        optimizer.apply_gradients(zip(grads,self.getTrainableVariables()),)
