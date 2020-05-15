@@ -21,7 +21,6 @@ except Exception as e:
 #
 
 
-
+#this is quite obiously a work in progress
 class Agent:
     def __init__(self):
-        
