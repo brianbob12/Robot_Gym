@@ -21,10 +21,11 @@ public class Player extends Competitor{
 	
 	public Player(float x,float y,Level level,Keyboard keyboard) {
 		//the values for player height width and maxHealth will eventually imported from a config file
-		super(x, y,(float) 10,(float) 20,level,(float) 100);
+		super(x, y,10F,20F,level,100F);
 		this.keyboard=keyboard;
 	}
 	
+	@Override
 	public int choseActionA() {
 		if (this.keyboard.d) {
 			return 1;
@@ -34,12 +35,14 @@ public class Player extends Competitor{
 		}
 		return 0;
 	}
+	@Override
 	public int choseActionB() {
 		if(this.keyboard.space) {
 			return 1;
 		}
 		return 0;
 	}
+	@Override
 	public int choseActionC() {
 		return 0;
 	}

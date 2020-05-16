@@ -13,7 +13,7 @@ from tensorflow.keras.regularizers import l2
 from tensorflow.keras.optimizers import Adam
 from tensorflow.nn import relu,sigmoid
 import numpy#this is actually a dependancy of tensorflow
-from Exceptions import *
+from .Exceptions import *
 
 #
 #Network
@@ -86,7 +86,6 @@ class Perceptron:
         #[first set of input layer vaues,second set of input layer values]
         for i in range(len(self.nHidden)+1):#for each hidden layer and the output layer
             layerVals.append(self.activationLookup[self.activation[i]](matmul(layerVals[-1],self.weights[i])+self.biases[i]))#I love Tensorflow 2!
-
         #return final layer as output layer
         return layerVals[-1]
 

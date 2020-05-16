@@ -24,3 +24,11 @@ except Exception as e:
 #this is quite obiously a work in progress
 class Agent:
     def __init__(self):
+        return
+    #function to create a new agent
+    def createNewAgent(self):
+
+        #establish 2 neural networks for double deep Q learning
+        self.network1=Net(495,8,[256,128,64,32,16],["sigmoid","sigmoid","sigmoid","sigmoid","sigmoid","sigmoid"])
+        self.network2=Net(495,8,[256,128,64,32,16],["sigmoid","sigmoid","sigmoid","sigmoid","sigmoid","sigmoid"])
+        

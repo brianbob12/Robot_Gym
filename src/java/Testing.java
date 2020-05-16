@@ -6,7 +6,6 @@
  */
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 
@@ -43,6 +42,16 @@ public class Testing {
 		bloc4.color=Color.cyan;
 		GameObject floor=new GameObject(100,30,200,10,false,false,testingLevel);
 		floor.color=Color.black;
+		
+		Agent agent=new Agent(120,45,testingLevel);
+		agent.importNetwork("playData/net1");
+		java.util.List<Double> input=new ArrayList<Double>();
+		input.add(5D);
+		java.util.List<Double> output=agent.evaluateNetwork(input);
+		for(double i:output) {
+			System.out.print(i);
+		}
+		
 		testingLevel.addObject(player);
 		testingLevel.addObject(bloc2);
 		testingLevel.addObject(bloc3);

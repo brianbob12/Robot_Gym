@@ -59,7 +59,7 @@ public class Grid {
 		//done by iterating over objects that moved
 		for(int i=0;i<this.level.objects.size();i++) {//iterate over all objects
 			GameObject selected=this.level.objects.get(i);
-			if(selected.moved) {
+			if(selected.moveable) {
 				//find cells attributing
 				List<String> toDo=attributing.get(selected);
 				for(int j=0;j<toDo.size();j++) {
@@ -77,7 +77,7 @@ public class Grid {
 		//retrace all moved objects
 		for(int i=0;i<this.level.objects.size();i++) {//iterate over all objects
 			GameObject selected=this.level.objects.get(i);
-			if(selected.moved) {
+			if(selected.moveable) {
 				this.traceObject(selected);
 			}
 		}
