@@ -13,6 +13,7 @@ import java.util.*;
  * Testing 
  * 
  * This class runs the game. This includes running levels both visibly and invisibly. 
+ * Just for testing and messing around.
  *
  */
 
@@ -45,20 +46,20 @@ public class Testing {
 		
 		Agent agent=new Agent(120,45,testingLevel);
 		agent.importNetwork("playData/net1");
-		java.util.List<Double> input=new ArrayList<Double>();
-		input.add(1D);
-		java.util.List<Double> output=agent.evaluateNetwork(input);
-		for(double i:output) {
-			System.out.print(i);
-		}
+		agent.color=Color.green;
 		
-		testingLevel.addObject(player);
+		
+		testingLevel.addObject(agent);
+		testingLevel.addObject(player);//note: player should always be added after agents
 		testingLevel.addObject(bloc2);
 		testingLevel.addObject(bloc3);
 		testingLevel.addObject(bloc4);
 		testingLevel.addObject(floor);
 		testingLevel.endGoal=300;
 		testingLevel.startPosition=0;
+		
+		agent.setupGrid();
+		agent.observe();
 		
 		GameArea testingLevelView=new GameArea(testingLevel);
 		testingLevelView.setBounds(0,0,800,800);
@@ -77,7 +78,7 @@ public class Testing {
 		long lastPhysicsUpdate=0;
 		int frameUpdate=20;//number of milliseconds between frame updates
 		long lastFrameUpdate=20;
-		int agentUpdate=10*physicsUpdate;
+		int agentUpdate=10;//number of physics updates before agent updates.
 		while(true) {
 			if(System.currentTimeMillis()%physicsUpdate==0&&System.currentTimeMillis()!=lastPhysicsUpdate) {
 				lastPhysicsUpdate=System.currentTimeMillis();
@@ -87,10 +88,6 @@ public class Testing {
 				lastFrameUpdate=System.currentTimeMillis();
 				testingLevelView.repaint();
 				frame.repaint();
-			}
-			//it is important that agent update is done after a physics update because of the grids
-			if(System.currentTimeMillis()%agentUpdate==0&&System.currentTimeMillis()!=lastPhysicsUpdate) {
-				
 			}
 		}
 		

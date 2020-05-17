@@ -62,15 +62,19 @@ public class Grid {
 			if(selected.moveable) {
 				//find cells attributing
 				List<String> toDo=attributing.get(selected);
-				for(int j=0;j<toDo.size();j++) {
-					this.cells.get(toDo.get(j)).getAttributers().remove(selected);
-					//check for no attributer
-					if(this.cells.get(toDo.get(j)).getAttributers().size()==0) {
-						//delete toDo in x-y map
-						this.cells.remove(toDo.get(j));
+				if(toDo!=null) {
+					for(int j=0;j<toDo.size();j++) {
+						this.cells.get(toDo.get(j)).getAttributers().remove(selected);
+						//check for no attributer
+						if(this.cells.get(toDo.get(j)).getAttributers().size()==0) {
+							//delete toDo in x-y map
+							this.cells.remove(toDo.get(j));
+						}
+						//note: the list in the attributing map will get overwritten later
 					}
-					//note: the list in the attributing map will get overwritten later
 				}
+				//retrace objet
+				this.traceObject(selected);
 			}
 		}
 		
@@ -149,7 +153,9 @@ public class Grid {
 			}
 		}
 		//map GameObject to List<GridCell>
-		this.attributing.put(selected,cellList);
+		if(selected.moveable) {
+			this.attributing.put(selected,cellList);
+		}
 	}
 	//produces the list of [walkable,deadly,enemy] for the given cell
 	//also deals with empty cells

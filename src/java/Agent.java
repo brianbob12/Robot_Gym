@@ -20,18 +20,28 @@ public class Agent extends Competitor {
 	private List<Matrix> weights;
 	private List<Matrix> biases;
 	private FileManager myFileManager;
-	private int stateSpace=1;//better to import this from a config file
-	private int actionSpace=1;
+	private int stateSpace=864;//better to import this from a config file
+	private int actionSpace=8;
 	private List<Integer> nHidden;
 	private List<String> activation;//stores activation functions for each layer
 	
 	//observation stuff
-	Grid myGrid;
+	private Grid myGrid;
+	private int nGh=12;//horizontal view range(grid space)
+	private int nGv=8;//vertical view range(grid space)
+	private int sG=7;//grid cell size in level space
+	private int SGS=3;//number of grid observations in the observed state
+	private List<List<Integer>> frames;//stores the grid outputs before evaluation max length of SGS
 	
 	//current action variables
-	int selectedActionA=0;
-	int selectedActionB=0;
-	int selectedActionC=0;
+	private int selectedActionA=0;
+	private int selectedActionB=0;
+	private int selectedActionC=0;
+	
+	private float epsilon=0F;//the proportion of completely random action taken 
+	
+	private List<Double> lastState;//stores the last state(made from observations) of the agent
+	//used in training
 	
 	public Agent(float x, float y, Level level) {
 		super(x, y, 10F, 20F, level, 100F);
@@ -116,9 +126,40 @@ public class Agent extends Competitor {
 	}
 	
 	//grid stuff
-	
-	public void observe() {
-		
+	//note: grids are centred around(x+with,y)
+	//function used to establish a new grid
+	public void setupGrid() {
+		this.myGrid=new Grid(this.level,this.x+this.width,this.y);
+		this.myGrid.generateGrid();
+	}
+	//returns grid output for visible squares a flattened array
+	public List<Integer> observe() {
+		if(!this.moved) {
+			//grid update is applicable
+			this.myGrid.updateGrid();
+		}
+		else {
+			//new grid needed
+			//this process in ineficcent and a grid-sharing system should be worked out at some point
+			this.setupGrid();
+		}
+		//export relevant grid squares
+		List<Integer> output=new ArrayList<Integer>();
+		float startPointX=this.x+this.width-(this.nGh/2)*this.sG;
+		float startPointY=this.y-(this.nGv/2)*this.sG;
+		float endPointX=this.x+this.width+(this.nGh/2)*this.sG;
+		float endPointY=this.y+(this.nGv/2)*this.sG;
+		//for all of the relevant cells
+		for(float tracerX=startPointX;tracerX<endPointX;tracerX+=this.sG) {
+			for(float tracerY=startPointY;tracerY<endPointY;tracerY+=this.sG) {
+				
+				int[] tad=this.myGrid.getCellExport(tracerX, tracerY);
+				for(int i:tad) {
+					output.add(i);
+				}
+			}
+		}
+		return output;
 	}
 	
 	//the sigmoid function for evaluating neural networks
@@ -139,5 +180,88 @@ public class Agent extends Competitor {
 	public int choseActionC() {
 		return this.selectedActionC;
 	}
-
+	
+	//returns this.SGS
+	public int getSGS() {
+		return this.SGS;
+	}
+	//this.frames interactions
+	private void clearFrames() {
+		this.frames=new ArrayList<List<Integer>>();
+	}
+	//adds an observation to the frames
+	public void addFrame() {
+		this.frames.add(this.observe());
+	}
+	
+	//requires this.frames.size()==SGS
+	//evaluates the network and sets a new action for the agent
+	public void newAction() {
+		//safety check
+		if(this.frames.size()!=SGS) {
+			System.out.print(this.frames.size());
+			System.out.println(" incorrect frames size");
+			return;
+		}
+		//flatten frames
+		List<Double> networkInput=new ArrayList<Double>();
+		for(List<Integer> i:this.frames) {
+			for(int j:i) {
+				networkInput.add((double) j);
+			}
+		}
+		
+		//for potential data collection
+		int oldActionA=this.selectedActionA;
+		int oldActionB=this.selectedActionB;
+		int oldActionC=this.selectedActionC;
+		
+		//possible random action
+		//epsilon=0 in levels with the player
+		if(Math.random()< this.epsilon) {
+			//take random action
+			this.selectedActionA=(int) Math.floor(Math.random()*3);
+			this.selectedActionB=(int) Math.floor(Math.random()*2);
+			this.selectedActionC=(int) Math.floor(Math.random()*3);
+		}
+		else {
+			//evaluate network
+			List<Double> rawOutput=this.evaluateNetwork(networkInput);
+			//take argmax of each action type
+			List<Double> actionsA=rawOutput.subList(0, 3);
+			List<Double> actionsB=rawOutput.subList(3,5);
+			List<Double> actionsC=rawOutput.subList(5, 9);
+			
+			this.selectedActionA=this.argMax(actionsA);
+			this.selectedActionB=this.argMax(actionsB);
+			this.selectedActionC=this.argMax(actionsC);
+			
+		}
+		//clear frames
+		this.clearFrames();
+		
+		//log history
+		if(this.lastState!=null) {
+			this.exportData(networkInput,oldActionA,oldActionB,oldActionC,this.lastState,this.selectedActionA,this.selectedActionB,this.selectedActionC);
+		}
+		this.lastState=networkInput;
+	}
+	
+	//exports the index of the highest value in input
+	private int argMax(List<Double> x) {
+		int maxIndex=0;
+		for(int i=1;i<x.size();i++) {
+			if(x.get(i)>x.get(maxIndex)) {
+				maxIndex=i;
+			}
+		}
+		return maxIndex;
+	}
+	
+	//decides on the value of this (state,action,reward,nextState) for learning
+	//next state is given as a state action pair and is evaluated by the python section later on in the training process
+	//exports if it is generally unique
+	private void exportData(List<Double> state,int actionA,int actionB,int actionC,List<Double> statePrime,int actionAPrime,int actionBPrime,int ActionCPrime) {
+		//TODO
+	}
 }
