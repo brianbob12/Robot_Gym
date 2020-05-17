@@ -38,7 +38,7 @@ public class Agent extends Competitor {
 	private int selectedActionB=0;
 	private int selectedActionC=0;
 	
-	private float epsilon=1F;//the proportion of completely random action taken 
+	private float epsilon=0F;//the proportion of completely random action taken 
 	
 	private List<Double> lastState;//stores the last state(made from observations) of the agent
 	//used in training
@@ -74,7 +74,7 @@ public class Agent extends Competitor {
 		//for each layer excluding the first hidden layer and the output layer
 		for(int i=1;i<this.nHidden.size();i++) {
 			//import weights
-			this.weights.add(new Matrix(this.nHidden.get(i-1),this.nHidden.get(i)));
+			this.weights.add(new Matrix(this.nHidden.get(i),this.nHidden.get(i-1)));
 			this.weights.get(i).setData(myFileManager.readRectangleCSV(path+"/w"+Integer.toString(i)+".csv"));
 			this.biases.add(new Matrix(this.nHidden.get(i),1));
 			this.biases.get(i).setData(myFileManager.readRectangleCSV(path+"/b"+Integer.toString(i)+".csv"));
@@ -104,9 +104,7 @@ public class Agent extends Competitor {
 
 		//for each hidden layer and the output layer
 		for(int i=1;i<this.nHidden.size()+2;i++) {
-			layerVals.add(layerVals.get(i-1).multiply(this.weights.get(i-1)).add(this.biases.get(i-1)));//error here
-			System.out.println("preactivation values");
-			layerVals.get(i).print();
+			layerVals.add(layerVals.get(i-1).multiply(this.weights.get(i-1)).add(this.biases.get(i-1)));
 			//apply activation function
 			List<List<Double>> nums=layerVals.get(i).getData();
 			for(int j=0;j<nums.size();j++) {
@@ -118,7 +116,7 @@ public class Agent extends Competitor {
 						continue;
 					}
 				}
-			}
+			};
 		}
 		
 		//return last layer
@@ -233,7 +231,7 @@ public class Agent extends Competitor {
 			//take argmax of each action type
 			List<Double> actionsA=rawOutput.subList(0, 3);
 			List<Double> actionsB=rawOutput.subList(3,5);
-			List<Double> actionsC=rawOutput.subList(5, 9);
+			List<Double> actionsC=rawOutput.subList(5, 8);
 			
 			this.selectedActionA=this.argMax(actionsA);
 			this.selectedActionB=this.argMax(actionsB);
