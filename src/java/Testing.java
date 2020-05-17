@@ -49,7 +49,7 @@ public class Testing {
 		agent.color=Color.green;
 		
 		
-		testingLevel.addObject(agent);
+		testingLevel.addAgent(agent);
 		testingLevel.addObject(player);//note: player should always be added after agents
 		testingLevel.addObject(bloc2);
 		testingLevel.addObject(bloc3);
@@ -58,8 +58,7 @@ public class Testing {
 		testingLevel.endGoal=300;
 		testingLevel.startPosition=0;
 		
-		agent.setupGrid();
-		agent.observe();
+		testingLevel.setUpAgents();
 		
 		GameArea testingLevelView=new GameArea(testingLevel);
 		testingLevelView.setBounds(0,0,800,800);
@@ -78,7 +77,6 @@ public class Testing {
 		long lastPhysicsUpdate=0;
 		int frameUpdate=20;//number of milliseconds between frame updates
 		long lastFrameUpdate=20;
-		int agentUpdate=10;//number of physics updates before agent updates.
 		while(true) {
 			if(System.currentTimeMillis()%physicsUpdate==0&&System.currentTimeMillis()!=lastPhysicsUpdate) {
 				lastPhysicsUpdate=System.currentTimeMillis();

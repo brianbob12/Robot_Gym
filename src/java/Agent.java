@@ -30,7 +30,7 @@ public class Agent extends Competitor {
 	private int nGh=12;//horizontal view range(grid space)
 	private int nGv=8;//vertical view range(grid space)
 	private int sG=7;//grid cell size in level space
-	private int SGS=3;//number of grid observations in the observed state
+	private int SGS;//number of grid observations in the observed state
 	private List<List<Integer>> frames;//stores the grid outputs before evaluation max length of SGS
 	
 	//current action variables
@@ -38,7 +38,7 @@ public class Agent extends Competitor {
 	private int selectedActionB=0;
 	private int selectedActionC=0;
 	
-	private float epsilon=0F;//the proportion of completely random action taken 
+	private float epsilon=1F;//the proportion of completely random action taken 
 	
 	private List<Double> lastState;//stores the last state(made from observations) of the agent
 	//used in training
@@ -90,7 +90,7 @@ public class Agent extends Competitor {
 	//keeps everything as float
 	//returns output layer
 	
-	public List<Double> evaluateNetwork(List<Double> inp) {
+	private List<Double> evaluateNetwork(List<Double> inp) {
 		List<Matrix> layerVals=new ArrayList<Matrix>();//stores layer values
 		
 		//convert inp to matrix
@@ -133,14 +133,14 @@ public class Agent extends Competitor {
 		this.myGrid.generateGrid();
 	}
 	//returns grid output for visible squares a flattened array
-	public List<Integer> observe() {
+	private List<Integer> observe() {
 		if(!this.moved) {
 			//grid update is applicable
 			this.myGrid.updateGrid();
 		}
 		else {
 			//new grid needed
-			//this process in ineficcent and a grid-sharing system should be worked out at some point
+			//this process in inefficient and a grid-sharing system should be worked out at some point
 			this.setupGrid();
 		}
 		//export relevant grid squares
@@ -185,8 +185,11 @@ public class Agent extends Competitor {
 	public int getSGS() {
 		return this.SGS;
 	}
+	public void setSGS(int val) {
+		this.SGS=val;
+	}
 	//this.frames interactions
-	private void clearFrames() {
+	public void clearFrames() {
 		this.frames=new ArrayList<List<Integer>>();
 	}
 	//adds an observation to the frames

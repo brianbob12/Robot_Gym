@@ -21,22 +21,56 @@ public class Level {
 	public List<Agent> agents=new ArrayList<Agent>();
 	public float gravity=(float) 0.1;
 	public float endGoal;//the x value that shows the end of the level
-	float startPosition;
+	public float startPosition;
+	int levelSGS=3;//SGS is the number of frames in the agent's state
+	int agentUpdateTime=10;//the number of physics frames that the agents are updated
+	private int counter=0;//Counts physics updates up to agentUpdateTime NOTE: this MUST start on 0
 	
 	public Level() {
 		
 	}
-	//I think I might need this later
+
 	public void addObject(GameObject obj) {
 		this.objects.add(obj);
 	}
+	
+	public void addAgent(Agent a) {
+		this.objects.add(a);
+		this.agents.add(a);
+		a.setSGS(this.levelSGS);
+		a.clearFrames();
+	}
+	
 	//physics update
 	public void step() {
-		for(int i=0;i<this.objects.size();i++) {
-			GameObject sel=this.objects.get(i);
+		for(GameObject sel: this.objects) {
 			if(sel.moveable) {
 				sel.move();
 			}
+		}
+		this.counter+=1;
+		this.counter%=this.agentUpdateTime;
+		//agent stuff
+		if(this.counter==0) {
+			//update agents
+			for(Agent sel: this.agents) {
+				sel.addFrame();
+				sel.newAction();
+			}
+		}
+		//record actions approaching the next agent update
+		for(int i=1;i<levelSGS;i++) {
+			if(this.counter==this.agentUpdateTime-i) {
+				for(Agent sel: this.agents) {
+					sel.addFrame();
+				}
+			}
+		}
+		
+	}
+	public void setUpAgents() {
+		for(Agent sel: this.agents) {
+			sel.setupGrid();
 		}
 	}
 }
