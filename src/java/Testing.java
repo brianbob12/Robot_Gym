@@ -46,7 +46,7 @@ public class Testing {
 		Agent agent=new Agent(120,45,testingLevel);
 		agent.importNetwork("playData/net1");
 		java.util.List<Double> input=new ArrayList<Double>();
-		input.add(5D);
+		input.add(1D);
 		java.util.List<Double> output=agent.evaluateNetwork(input);
 		for(double i:output) {
 			System.out.print(i);

@@ -17,13 +17,13 @@ public class Agent extends Competitor {
 	
 	//Neural network parameters
 	//Matrices are used here for easer computation
-	List<Matrix> weights;
-	List<Matrix> biases;
-	FileManager myFileManager;
-	int stateSpace=1;//better to import this from a config file
-	int actionSpace=1;
-	List<Integer> nHidden;
-	List<String> activation;//stores activation functions for each layer
+	private List<Matrix> weights;
+	private List<Matrix> biases;
+	private FileManager myFileManager;
+	private int stateSpace=1;//better to import this from a config file
+	private int actionSpace=1;
+	private List<Integer> nHidden;
+	private List<String> activation;//stores activation functions for each layer
 	
 	//observation stuff
 	Grid myGrid;
@@ -94,8 +94,9 @@ public class Agent extends Competitor {
 
 		//for each hidden layer and the output layer
 		for(int i=1;i<this.nHidden.size()+2;i++) {
-			layerVals.add(layerVals.get(i-1).multiply(this.weights.get(i-1)).add(this.biases.get(i-1)));
-			
+			layerVals.add(layerVals.get(i-1).multiply(this.weights.get(i-1)).add(this.biases.get(i-1)));//error here
+			System.out.println("preactivation values");
+			layerVals.get(i).print();
 			//apply activation function
 			List<List<Double>> nums=layerVals.get(i).getData();
 			for(int j=0;j<nums.size();j++) {

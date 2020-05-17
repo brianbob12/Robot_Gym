@@ -11,7 +11,7 @@ p=p[:-1]
 myNet=Perceptron()
 #myNet.newNetwork(1,1,[5,5],["sigmoid","sigmoid","sigmoid"])
 myNet.importNetwork(p+"\\playData\\net1")
-print(myNet.evaluate([[float(10000000000)]]))
+print(myNet.evaluate([[1.0]]))
 for i in range (0):
     myNet.train([[1.0]],[[1]],1e-3,0)
     print(myNet.evaluate([[1.0]]))

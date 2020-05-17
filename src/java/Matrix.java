@@ -91,7 +91,7 @@ public class Matrix {
 				newData.get(i).add(this.data.get(i).get(j)+tad.get(i).get(j));
 			}
 		}
-		product.setData(tad);
+		product.setData(newData);
 		return product;
 	}
 	
