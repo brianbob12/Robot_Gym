@@ -21,7 +21,7 @@ public class Agent extends Competitor {
 	private List<Matrix> biases;
 	private FileManager myFileManager;
 	private int stateSpace=864;//better to import this from a config file
-	private int actionSpace=8;
+	private int actionSpace=18;
 	private List<Integer> nHidden;
 	private List<String> activation;//stores activation functions for each layer
 	
@@ -40,7 +40,12 @@ public class Agent extends Competitor {
 	
 	private float epsilon=0F;//the proportion of completely random action taken 
 	
-	private List<Double> lastState;//stores the last state(made from observations) of the agent
+	public boolean training=false;//this stores weather or not this agent is currently learning and collecting data
+	
+	private List<AgentDataPoint> data=new ArrayList<AgentDataPoint>();//used for training future agents
+	
+	private List<Integer> lastState;//stores the last state(made from observations) of the agent
+	private float lastScore;
 	//used in training
 	
 	public Agent(float x, float y, Level level) {
@@ -228,24 +233,36 @@ public class Agent extends Competitor {
 		else {
 			//evaluate network
 			List<Double> rawOutput=this.evaluateNetwork(networkInput);
-			//take argmax of each action type
-			List<Double> actionsA=rawOutput.subList(0, 3);
-			List<Double> actionsB=rawOutput.subList(3,5);
-			List<Double> actionsC=rawOutput.subList(5, 8);
 			
-			this.selectedActionA=this.argMax(actionsA);
-			this.selectedActionB=this.argMax(actionsB);
-			this.selectedActionC=this.argMax(actionsC);
+			//take argmax of neural network
+			int macroAction=this.argMax(rawOutput);
+			this.selectedActionA=macroAction%3;
+			macroAction-=this.selectedActionA;
+			macroAction=macroAction/3;
+			this.selectedActionB=macroAction%2;
+			macroAction-=macroAction-this.selectedActionB;
+			macroAction=macroAction/2;
+			this.selectedActionC=macroAction;
 			
 		}
 		//clear frames
 		this.clearFrames();
 		
-		//log history
-		if(this.lastState!=null) {
-			this.exportData(networkInput,oldActionA,oldActionB,oldActionC,this.lastState,this.selectedActionA,this.selectedActionB,this.selectedActionC);
+		if (this.training) {
+			//log history
+			List<Integer> stateForExport=new ArrayList<Integer>();//flattened int of this.frames
+			for(List<Integer> i:this.frames) {
+				for(int j:i) {
+					stateForExport.add(j);
+				}
+			}
+			if(this.lastState!=null) {
+				float reward=this.getTotalScore()-this.lastScore;
+				this.saveData(stateForExport,oldActionA,oldActionB,oldActionC,reward,this.lastState,this.selectedActionA,this.selectedActionB,this.selectedActionC);
+			}
+			this.lastState=stateForExport;
+			this.lastScore=this.getTotalScore();
 		}
-		this.lastState=networkInput;
 	}
 	
 	//exports the index of the highest value in input
@@ -262,7 +279,49 @@ public class Agent extends Competitor {
 	//decides on the value of this (state,action,reward,nextState) for learning
 	//next state is given as a state action pair and is evaluated by the python section later on in the training process
 	//exports if it is generally unique
-	private void exportData(List<Double> state,int actionA,int actionB,int actionC,List<Double> statePrime,int actionAPrime,int actionBPrime,int ActionCPrime) {
-		//TODO
+	private void saveData(List<Integer> state,int actionA,int actionB,int actionC,float reward,List<Integer> statePrime,int actionAPrime,int actionBPrime,int actionCPrime) {
+		//decide if relevant
+		//flatten Actions
+		List<Integer> action= new ArrayList<Integer>();
+		List<Integer> nextAction= new ArrayList<Integer>();
+		for(int i=0;i<8;i++) {
+			if(i==actionA) {
+				action.add(1);
+			}
+			else if(i==3+actionB) {
+				action.add(1);
+			}
+			else if(i==5+actionC) {
+				action.add(1);
+			}
+			else {
+				action.add(0);
+			}
+			if(i==actionAPrime) {
+				nextAction.add(1);
+			}
+			else if(i==3+actionBPrime) {
+				nextAction.add(1);
+			}
+			else if(i==5+actionCPrime) {
+				nextAction.add(1);
+			}
+			else {
+				nextAction.add(0);
+			}
+		}
+		this.data.add(new AgentDataPoint(state,action,reward,statePrime,nextAction));
+		
+	}
+	
+	//export data upon death
+	@Override
+	public void die() {
+		super.die();
+		this.exportData();
+	}
+	//exports the saved experience data
+	public void exportData() {
+		
 	}
 }

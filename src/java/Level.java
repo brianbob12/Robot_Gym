@@ -26,6 +26,8 @@ public class Level {
 	int agentUpdateTime=10;//the number of physics frames that the agents are updated
 	private int counter=0;//Counts physics updates up to agentUpdateTime NOTE: this MUST start on 0
 	
+	public boolean trainingLevel=true;//if this level is bing played or if the agents are learning to play it.
+	
 	public Level() {
 		
 	}
@@ -39,6 +41,7 @@ public class Level {
 		this.agents.add(a);
 		a.setSGS(this.levelSGS);
 		a.clearFrames();
+		a.training=this.trainingLevel;
 	}
 	
 	//physics update

@@ -5,7 +5,6 @@
  *
  */
 import java.util.*;
-import java.lang.Math.*;
 
 /**
  * Grid
@@ -44,7 +43,7 @@ public class Grid {
 		for(int i=0;i<this.level.objects.size();i++) {//iterate over all objects
 			GameObject selected=this.level.objects.get(i);
 			//check if the object is invisible/irrelevant
-			if(selected.objectClass!="walkable"&&selected.objectClass!="deadly"&&selected.objectClass!="enemy") {
+			if(selected.type!=GameObject.objectType.WALKABLE&&selected.type!=GameObject.objectType.DEADLY&&selected.type!=GameObject.objectType.ENEMY) {
 				continue;
 			}
 			this.traceObject(selected);
@@ -141,13 +140,13 @@ public class Grid {
 				cell.getAttributers().add(selected);
 				cellList.add(this.getKey(tracerX, tracerY));
 				
-				if(selected.objectClass=="walkable") {
+				if(selected.type==GameObject.objectType.WALKABLE) {
 					cell.setWalkable(1);
 				}
-				else if(selected.objectClass=="deadly") {
+				else if(selected.type==GameObject.objectType.DEADLY) {
 					cell.setDeadly(1);
 				}
-				else if(selected.objectClass=="enemy"){
+				else if(selected.type==GameObject.objectType.ENEMY){
 					cell.setEnemy(1);
 				}
 			}

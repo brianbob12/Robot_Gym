@@ -28,7 +28,7 @@ public class Competitor extends Destructible {
 		this.xOffset=x;
 		this.enemiesScore=0;
 		this.moveScore=0;
-		this.objectClass="ally";
+		this.type=objectType.ALLY;
 	}
 	
 	//updates the movement score & check for finished

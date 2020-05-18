@@ -28,9 +28,15 @@ public class GameObject {
 	public boolean moveable;//Weather this object is able to be moved
 	public Color color=null;//null if object is immovable
 	public Level level;
-	public String objectClass="walkable";
+	public objectType type=objectType.WALKABLE;
 	public boolean moved;//stores whether this object moved this frame
 	
+	public enum objectType{
+		WALKABLE,
+		ENEMY,
+		ALLY,
+		DEADLY
+	}
 	
 	public GameObject(float x,float y,float width,float height,boolean gravity,boolean moveable,Level level) {
 		this.x=x;
@@ -105,7 +111,7 @@ public class GameObject {
 			return;
 		}
 		//disable ally collisions
-		if(this.objectClass=="ally"&&hit.objectClass=="ally") {
+		if(this.type==objectType.ALLY&&hit.type==objectType.ALLY) {
 			return;
 		}
 		if(this.collidable&&hit.collidable) {

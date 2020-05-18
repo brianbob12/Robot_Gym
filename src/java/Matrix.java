@@ -5,7 +5,6 @@
  *
  */
 import java.util.*;
-import java.util.concurrent.Callable;
 /**
  * Matrix
  * A simple double matrix with multiplication. For use in evaluation neural nets
