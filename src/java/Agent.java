@@ -41,6 +41,7 @@ public class Agent extends Competitor {
 	private float epsilon=0F;//the proportion of completely random action taken 
 	
 	public boolean training=false;//this stores weather or not this agent is currently learning and collecting data
+	public boolean lastExport=false;//ready to export
 	
 	private List<AgentDataPoint> data=new ArrayList<AgentDataPoint>();//used for training future agents
 	
@@ -173,14 +174,32 @@ public class Agent extends Competitor {
 	//override action functions
 	@Override
 	public int choseActionA() {
+		//possible random action
+		//epsilon=0 in levels with the player
+		if(Math.random()< this.epsilon) {
+			//take random action
+			return (int) Math.floor(Math.random()*3);
+		}
 		return this.selectedActionA;
 	}
 	@Override
 	public int choseActionB() {
+		//possible random action
+		//epsilon=0 in levels with the player
+		if(Math.random()< this.epsilon) {
+			//take random action
+			return (int) Math.floor(Math.random()*2);
+		}
 		return this.selectedActionB;
 	}
 	@Override
 	public int choseActionC() {
+		//possible random action
+		//epsilon=0 in levels with the player
+		if(Math.random()< this.epsilon) {
+			//take random action
+			return (int) Math.floor(Math.random()*3);
+		}
 		return this.selectedActionC;
 	}
 	
@@ -222,34 +241,26 @@ public class Agent extends Competitor {
 		int oldActionB=this.selectedActionB;
 		int oldActionC=this.selectedActionC;
 		
-		//possible random action
-		//epsilon=0 in levels with the player
-		if(Math.random()< this.epsilon) {
-			//take random action
-			this.selectedActionA=(int) Math.floor(Math.random()*3);
-			this.selectedActionB=(int) Math.floor(Math.random()*2);
-			this.selectedActionC=(int) Math.floor(Math.random()*3);
-		}
-		else {
-			//evaluate network
-			List<Double> rawOutput=this.evaluateNetwork(networkInput);
-			
-			//take argmax of neural network
-			int macroAction=this.argMax(rawOutput);
-			this.selectedActionA=macroAction%3;
-			macroAction-=this.selectedActionA;
-			macroAction=macroAction/3;
-			this.selectedActionB=macroAction%2;
-			macroAction-=macroAction-this.selectedActionB;
-			macroAction=macroAction/2;
-			this.selectedActionC=macroAction;
-			
-		}
+		//evaluate network
+		List<Double> rawOutput=this.evaluateNetwork(networkInput);
+		
+		//take argmax of neural network
+		int macroAction=this.argMax(rawOutput);
+		this.selectedActionA=macroAction%3;
+		macroAction-=this.selectedActionA;
+		macroAction=macroAction/3;
+		this.selectedActionB=macroAction%2;
+		macroAction-=macroAction-this.selectedActionB;
+		macroAction=macroAction/2;
+		this.selectedActionC=macroAction;
 		//clear frames
 		this.clearFrames();
 		
 		if (this.training) {
 			//log history
+			if(this.dead||this.finished) {
+				this.lastExport=true;
+			}
 			List<Integer> stateForExport=new ArrayList<Integer>();//flattened int of this.frames
 			for(List<Integer> i:this.frames) {
 				for(int j:i) {
@@ -280,37 +291,24 @@ public class Agent extends Competitor {
 	//next state is given as a state action pair and is evaluated by the python section later on in the training process
 	//exports if it is generally unique
 	private void saveData(List<Integer> state,int actionA,int actionB,int actionC,float reward,List<Integer> statePrime,int actionAPrime,int actionBPrime,int actionCPrime) {
-		//decide if relevant
 		//flatten Actions
+		//oneHot actions
 		List<Integer> action= new ArrayList<Integer>();
 		List<Integer> nextAction= new ArrayList<Integer>();
-		for(int i=0;i<8;i++) {
-			if(i==actionA) {
-				action.add(1);
-			}
-			else if(i==3+actionB) {
-				action.add(1);
-			}
-			else if(i==5+actionC) {
-				action.add(1);
-			}
-			else {
-				action.add(0);
-			}
-			if(i==actionAPrime) {
-				nextAction.add(1);
-			}
-			else if(i==3+actionBPrime) {
-				nextAction.add(1);
-			}
-			else if(i==5+actionCPrime) {
-				nextAction.add(1);
-			}
-			else {
-				nextAction.add(0);
+		for(int i=0;i<18;i++) {
+			action.add(0);
+			nextAction.add(0);
+		}
+		action.set(actionC*6+actionB*3+actionA, 1);
+		nextAction.set(actionCPrime*6+actionBPrime*2+actionAPrime, 1);
+		AgentDataPoint tad=new AgentDataPoint(state,action,reward,statePrime,nextAction);
+		//decide if relevant
+		for(AgentDataPoint i: this.data) {
+			if(tad.similar(i)) {
+				return;
 			}
 		}
-		this.data.add(new AgentDataPoint(state,action,reward,statePrime,nextAction));
+		this.data.add(tad);
 		
 	}
 	
@@ -318,10 +316,13 @@ public class Agent extends Competitor {
 	@Override
 	public void die() {
 		super.die();
-		this.exportData();
 	}
 	//exports the saved experience data
-	public void exportData() {
+	public void exportData(String path) {
 		
+	}
+	
+	public void setEpsilon(float val) {
+		this.epsilon=val;
 	}
 }
