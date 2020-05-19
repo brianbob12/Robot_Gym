@@ -36,6 +36,7 @@ public class Selector extends JPanel implements ActionListener{
 		addBox.setLayout(null);
 		addBox.setVisible(true);
 		addBox.setBounds(50,50,200,40);
+		addBox.setFocusable(false);//very important stops element from taking the focus away from keyboard
 		this.add(addBox);
 	}
 
