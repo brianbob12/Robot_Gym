@@ -1,3 +1,6 @@
+package gameDynamics;
+import gameDynamics.GameObject.objectType;
+
 /**
  * 
  * @author cyrus singer

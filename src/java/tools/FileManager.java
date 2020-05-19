@@ -1,3 +1,4 @@
+package tools;
 /**
  * 
  * @author cyrus singer
@@ -14,7 +15,7 @@ import java.io.IOException;
 public class FileManager {
 	
 	//reads a file and returns a list of strings by line of the file
-	public List<String> readByLine(String path){
+	public static List<String> readByLine(String path){
 		List<String> out=new ArrayList<String>();
 		try {
 			File f= new File(path);
@@ -31,8 +32,8 @@ public class FileManager {
 	}
 	
 	//reads a .csv(must be a perfect rectangle) and returns two dimensional array by columns and then rows - [columnNumber,rowNumber]
-	public List<List<Double>> readRectangleCSV(String path){
-		List<String> rawOutput=this.readByLine(path);
+	public static List<List<Double>> readRectangleCSV(String path){
+		List<String> rawOutput=readByLine(path);
 		//list of each line casted to floats separated by commas 
 		List<List<Double>> sep=new ArrayList<List<Double>>();
 		for(int i=0;i<rawOutput.size();i++) {

@@ -1,3 +1,4 @@
+package userInterface;
 /**
  * 
  * @author cyrus singer
@@ -10,6 +11,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.*;
+
+import gameDynamics.GameObject;
+import gameDynamics.Level;
+
+import javax.imageio.ImageIO;
+import java.io.File;
 
 /**
  * GameArea
@@ -25,13 +32,18 @@ public class GameArea extends JPanel {
 	int viewY=100;//how far the gameArea is allowed to show in the Level-y direction
 	
 	//the viewCenterX/Y store the *STATIC* view center
-	float viewCenterX=0;
-	float viewCenterY=0;
+	public float viewCenterX=0;
+	public float viewCenterY=0;
 	
-	float viewCenterOffsetX=0;
-	float viewCenterOffsetY=0;
-	boolean dynamicViewCenter=false;//Weather the view center is fixed to an object
-	GameObject fixedViewCenter;//be careful that this is in the correct level
+	public float viewCenterOffsetX=0;
+	public float viewCenterOffsetY=0;
+	public boolean dynamicViewCenter=false;//Weather the view center is fixed to an object
+	public GameObject fixedViewCenter;//be careful that this is in the correct level
+	
+	//background textures
+	boolean backroundTex=false;//if there is an active background texture
+	private Image background;
+	private int backgroundLen;//length of the background texture in level space
 	
 	public GameArea(Level level) {
 		this.level=level;
@@ -54,6 +66,15 @@ public class GameArea extends JPanel {
 				
 		//for each object
 		for(int i=0;i<this.level.objects.size();i++) {
+			
+			//background stuff
+			if(this.backroundTex) {
+				for(int x=(int)(xLOW-xLOW%this.backgroundLen);x<xUP+(this.backgroundLen-xUP%this.backgroundLen);x+=this.backgroundLen) {
+					for(int y=(int)(yLOW-yLOW%this.backgroundLen);y<yUP+(this.backgroundLen-yUP%this.backgroundLen);y+=this.backgroundLen) {
+						g.drawImage(this.background,(int)((x-xLOW)*convRatioX),(int)(this.getHeight()-(y-yLOW)*convRatioY),(int) (this.backgroundLen*convRatioX),-(int) (this.backgroundLen*convRatioY),null);
+					}
+				}
+			}
 			
 			GameObject sel=this.level.objects.get(i);//selected object
 			
@@ -83,6 +104,18 @@ public class GameArea extends JPanel {
 		}
 		else {
 			return Arrays.asList(this.viewCenterX,this.viewCenterY);
+		}
+	}
+	
+	//set a background image
+	public void setBackgroundImage(String path,int length) {
+		this.backroundTex=true;
+		try {
+			this.background=ImageIO.read(new File(path));
+			this.backgroundLen=length;
+		}
+		catch(Exception e) {
+			System.out.println(e);
 		}
 	}
 }

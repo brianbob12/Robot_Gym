@@ -7,6 +7,14 @@
 
 import java.awt.*;
 import javax.swing.*;
+
+import gameDynamics.Agent;
+import gameDynamics.GameObject;
+import gameDynamics.Level;
+import gameDynamics.Player;
+import tools.Keyboard;
+import userInterface.GameArea;
+
 import java.util.*;
 
 /**
@@ -45,6 +53,7 @@ public class Testing {
 		floor.color=Color.black;
 		
 		Agent agent=new Agent(120,45,testingLevel);
+		agent.name="A1";
 		agent.importNetwork("playData/net1");
 		agent.color=Color.green;
 		

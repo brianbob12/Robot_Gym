@@ -1,3 +1,4 @@
+package tools;
 /**
  * 
  * @author cyrus singer
@@ -15,12 +16,12 @@ import java.awt.event.*;
  */
 public class Keyboard implements KeyListener {
 	
-	boolean w=false;
-	boolean a=false;
-	boolean s=false;
-	boolean d=false;
-	boolean space=false;
-	boolean ctrl=false;
+	public boolean w=false;
+	public boolean a=false;
+	public boolean s=false;
+	public boolean d=false;
+	public boolean space=false;
+	public boolean ctrl=false;
 	
 	public Keyboard() {
 		

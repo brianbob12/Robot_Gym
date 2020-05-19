@@ -1,3 +1,6 @@
+package gameDynamics;
+import tools.Keyboard;
+
 /**
  * 
  * @author cyrus singer

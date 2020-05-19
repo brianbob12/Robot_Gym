@@ -1,3 +1,4 @@
+package gameDynamics;
 /**
  * 
  * @author cyrus singer
@@ -5,6 +6,9 @@
  *
  */
 import java.util.*;
+
+import tools.FileManager;
+
 import java.lang.Math;
 /**
  * Agent
@@ -14,6 +18,8 @@ import java.lang.Math;
  */
 
 public class Agent extends Competitor {
+	
+	public String name;
 	
 	//Neural network parameters
 	//Matrices are used here for easer computation
@@ -167,7 +173,7 @@ public class Agent extends Competitor {
 	}
 	
 	//the sigmoid function for evaluating neural networks
-	private double sigmoid(double x) {
+	private static double sigmoid(double x) {
 		return (1/(1+Math.pow(Math.E,-1*x)));
 	}
 	
