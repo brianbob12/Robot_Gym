@@ -56,6 +56,9 @@ public class LevelEditor {
 		selector.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		frame.add(selector);
 		
+		//level interface
+		LevelInterface li=new LevelInterface(selector,levelView);
+		frame.addMouseListener(li);
 		
 		
 		//looping

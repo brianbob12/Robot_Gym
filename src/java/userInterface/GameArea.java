@@ -63,18 +63,18 @@ public class GameArea extends JPanel {
 		
 		float convRatioX=this.getWidth()/this.viewX;
 		float convRatioY=this.getHeight()/this.viewY;
-				
-		//for each object
-		for(int i=0;i<this.level.objects.size();i++) {
-			
-			//background stuff
-			if(this.backroundTex) {
-				for(int x=(int)(xLOW-xLOW%this.backgroundLen);x<xUP+(this.backgroundLen-xUP%this.backgroundLen);x+=this.backgroundLen) {
-					for(int y=(int)(yLOW-yLOW%this.backgroundLen);y<yUP+(this.backgroundLen-yUP%this.backgroundLen);y+=this.backgroundLen) {
-						g.drawImage(this.background,(int)((x-xLOW)*convRatioX),(int)(this.getHeight()-(y-yLOW)*convRatioY),(int) (this.backgroundLen*convRatioX),-(int) (this.backgroundLen*convRatioY),null);
-					}
+		
+		//background stuff
+		if(this.backroundTex) {
+			for(int x=(int)(xLOW-xLOW%this.backgroundLen);x<xUP+(this.backgroundLen-xUP%this.backgroundLen);x+=this.backgroundLen) {
+				for(int y=(int)(yLOW-yLOW%this.backgroundLen);y<yUP+(this.backgroundLen-yUP%this.backgroundLen);y+=this.backgroundLen) {
+					g.drawImage(this.background,(int)((x-xLOW)*convRatioX),(int)(this.getHeight()-(y-yLOW)*convRatioY),(int) (this.backgroundLen*convRatioX),-(int) (this.backgroundLen*convRatioY),null);
 				}
 			}
+		}
+		
+		//for each object
+		for(int i=0;i<this.level.objects.size();i++) {
 			
 			GameObject sel=this.level.objects.get(i);//selected object
 			
@@ -92,7 +92,7 @@ public class GameArea extends JPanel {
 	}
 	
 	//Returns the view center of view in level space
-	private List<Float> getViewCenter(){
+	public List<Float> getViewCenter(){
 		if(this.dynamicViewCenter) {
 			if(this.fixedViewCenter.level==this.level) {
 				return Arrays.asList(this.fixedViewCenter.x+this.viewCenterOffsetX,this.fixedViewCenter.y+this.viewCenterOffsetY);
@@ -117,5 +117,14 @@ public class GameArea extends JPanel {
 		catch(Exception e) {
 			System.out.println(e);
 		}
+	}
+	public int getViewX() {
+		return this.viewX;
+	}
+	public int getViewY() {
+		return this.viewY;
+	}
+	public Level getLevel() {
+		return this.level;
 	}
 }

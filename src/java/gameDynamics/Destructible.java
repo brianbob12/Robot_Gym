@@ -20,6 +20,7 @@ public class Destructible extends GameObject {
 	private float maxHealth;
 	public float currentHealth;
 	public boolean dead;
+	public boolean harmable=true;
 	public int team=0;//stores a marker of team for friendly fire purposes
 	
 	public Destructible(float x, float y, float width, float height, boolean gravity, boolean moveable,Level level,float maxHealth) {
@@ -30,9 +31,11 @@ public class Destructible extends GameObject {
 	}
 	
 	public void damage(float damage) {
-		this.currentHealth-=damage;
-		if(this.currentHealth<0) {
-			this.die();
+		if(this.harmable) {
+			this.currentHealth-=damage;
+			if(this.currentHealth<0) {
+				this.die();
+			}
 		}
 	}
 	
@@ -44,8 +47,10 @@ public class Destructible extends GameObject {
 	}
 	
 	public void die() {
-		this.dead=true;
-		this.level.objects.remove(this);
+		if(this.harmable) {
+			this.dead=true;
+			this.level.objects.remove(this);
+		}
 	}
 
 }
