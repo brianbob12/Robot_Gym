@@ -90,8 +90,9 @@ class Perceptron:
         return layerVals[-1]
 
     #train a nerual netwrok to fit the data provided
-    #returns MSE
-    def train(self,X,Y,learningRate,L2val):
+    #returns squared error
+    #only trianes for one Yindex(Yi) per training example
+    def train(self,X,Y,Yi,learningRate,L2val):
         #apply L2 regularization to avoid overfitting
         #this is really really important
         regularizer=l2(L2val)#just ot be clear this is tf.keras.regularizers.l2
@@ -104,10 +105,10 @@ class Perceptron:
 
             #calculate error
             guess=self.evaluate(X)
-            #calculate error using MSE
+            #calculate error using sqared error
             error=0
             for i in range(len(Y)):
-                error+=(guess[i]-Y[i])**2
+                error+=(guess[i][Yi]-Y[i][Yi])**2
             error=error/len(Y)
 
         optimizer=Adam(learningRate)

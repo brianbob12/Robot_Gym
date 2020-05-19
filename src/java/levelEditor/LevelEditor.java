@@ -36,16 +36,27 @@ public class LevelEditor {
 		frame.addKeyListener(keyboard);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		
 		Level level=newLevel();
 		
+		//add level view
 		GameArea levelView=new GameArea(level);
 		levelView.setBounds(0,0,600,600);
 		levelView.setLayout(null);
 		levelView.setVisible(true);
-		levelView.setBackgroundImage("assets/levelEditorBackground.png",10);
-		levelView.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		
+		levelView.setBackgroundImage("assets/images/levelEditorBackground.png",10);
 		frame.add(levelView);
+		levelView.addKeyListener(keyboard);
+		
+		//add selector
+		Selector selector=new Selector();
+		selector.setBounds(0,600,600,400);
+		selector.setLayout(null);
+		selector.setVisible(true);
+		selector.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		frame.add(selector);
+		
+		
 		
 		//looping
 		int frameUpdate=20;//number of milliseconds between frame updates
@@ -74,9 +85,10 @@ public class LevelEditor {
 	}
 	
 	
-	public static void mainLoop(GameArea levelView,Frame frame,Keyboard keyboard) {
+	public static void mainLoop(GameArea levelView,JFrame frame,Keyboard keyboard) {
 		//camera scroll speed thorugh the level
 		float scrollSpeed=0.1F;
+		
 		if(keyboard.space) {
 			scrollSpeed=0.5F;
 		}
@@ -101,6 +113,7 @@ public class LevelEditor {
 		//paint
 		levelView.repaint();
 		frame.repaint();
+		
 	}
 
 }

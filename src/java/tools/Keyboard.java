@@ -26,6 +26,7 @@ public class Keyboard implements KeyListener {
 	public Keyboard() {
 		
 	}
+	
 	public void keyPressed(KeyEvent event) {
 		switch(event.getKeyChar()) {
 			case 'a':
