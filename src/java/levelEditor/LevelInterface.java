@@ -25,37 +25,27 @@ import userInterface.GameArea;
 public class LevelInterface extends MouseAdapter{
 	
 	Selector sel;
+	public GameObject selected=null;//used for the inspctor
 	GameObject holding=null;//used for GameObject drag and drop
+	float holdingOffsetX;//for dragging
+	float holdingOffsetY;
 	GameArea area;
+	Inspector insp;
 	
-	public LevelInterface(Selector sel,GameArea area) {
+	public LevelInterface(Selector sel,GameArea area,Inspector insp) {
 		this.sel=sel;
 		this.area=area;
+		this.insp=insp;
 	}
 	public void mouseClicked(MouseEvent e) {
 		
-		//check if on levelView
-		int mouseX=e.getX()-8;
-		int mouseY=e.getY()+29;
-		
-		//get level space coordinates
-		float levelX;//level space X
-		float levelY;//level space Y
-		List<Float> viewBounds=this.area.getViewCenter();
-		float xLOW=viewBounds.get(0);
-		float yLOW=viewBounds.get(1);
-		
-		float convRatioX=this.area.getWidth()/this.area.getViewX();
-		float convRatioY=this.area.getHeight()/this.area.getViewY();
-		
-		levelX=(mouseX/convRatioX)+xLOW;
-		levelY=((this.area.getHeight()-mouseY)/convRatioY)+yLOW;
-		
-		if(mouseX>600&&mouseY>600) {
+		if(e.getX()>600||e.getY()>600) {
 			//out of bounds
 			return;
 		}
-		
+		float[] o=this.levelSpaceMouse(e);
+		float levelX=o[0];
+		float levelY=o[1];
 		if(e.getButton()==e.BUTTON3) {
 			//add new object
 			GameObject newObj;
@@ -73,6 +63,88 @@ public class LevelInterface extends MouseAdapter{
 			}
 			this.area.getLevel().addObject(newObj);
 		}
+		
+	}
+	public void mousePressed(MouseEvent e) {
+		
+		if(e.getX()>600||e.getY()>600) {
+			//out of bounds
+		}
+		else {
+			
+			float[] o=this.levelSpaceMouse(e);
+			float levelX=o[0];
+			float levelY=o[1];
+			if(e.getButton()==e.BUTTON1) {
+				//find gameobject
+				for(GameObject sel:this.area.getLevel().objects) {
+					if(levelX>sel.x&&levelX<sel.x+sel.width) {
+						if(levelY>sel.y&&levelY<sel.y+sel.height){
+							this.holding=sel;
+							if(this.selected!=null) {
+								this.selected.highlight=false;
+							}
+							this.selected=sel;
+							this.selected.highlight=true;
+							this.holdingOffsetX=levelX-sel.x;
+							this.holdingOffsetY=levelY-sel.y;
+						}
+					}
+				}
+			}
+		}	
+	}
+	
+	public void mouseDragged(MouseEvent e) {
+		if(e.getX()>600||e.getY()>600) {
+			//out of bounds
+		}
+		else {
+			if(this.holding!=null) {
+				
+				float[] o=this.levelSpaceMouse(e);
+				float levelX=o[0];
+				float levelY=o[1];
+				this.holding.x=levelX-this.holdingOffsetX;
+				this.holding.y=levelY-this.holdingOffsetY;
+			}
+		}
+	}
+	public void mouseReleased(MouseEvent e) {
+		if(e.getX()>600||e.getY()>600) {
+			//out of bounds
+		}
+		else {
+			
+			float[] o=this.levelSpaceMouse(e);
+			float levelX=o[0];
+			float levelY=o[1];
+			if(e.getButton()==e.BUTTON1) {
+				//find remove holding
+				this.holding=null;
+			}
+		}
+	}
+	//returns the x and y of the mouse in level space
+	private float[] levelSpaceMouse(MouseEvent e) {
+		//check if on levelView
+		int mouseX=e.getX()-8;
+		int mouseY=e.getY()-30;
+		
+		//get level space coordinates
+		float levelX;//level space X
+		float levelY;//level space Y
+		List<Float> viewBounds=this.area.getViewCenter();
+		float xLOW=viewBounds.get(0);
+		float yLOW=viewBounds.get(1);
+		
+		float convRatioX=this.area.getWidth()/this.area.getViewX();
+		float convRatioY=this.area.getHeight()/this.area.getViewY();
+		
+		levelX=(mouseX/convRatioX)+xLOW;
+		levelY=((this.area.getHeight()-mouseY)/convRatioY)+yLOW;
+		float[] out= {levelX,levelY};
+		return out;
 	}
 
 }

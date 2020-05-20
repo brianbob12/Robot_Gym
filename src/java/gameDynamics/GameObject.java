@@ -31,6 +31,7 @@ public class GameObject {
 	public Level level;
 	public objectType type=objectType.WALKABLE;
 	public boolean moved;//stores whether this object moved this frame
+	public boolean highlight=false;//Controls a highlight
 	
 	public enum objectType{
 		WALKABLE,

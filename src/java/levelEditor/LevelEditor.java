@@ -56,10 +56,19 @@ public class LevelEditor {
 		selector.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		frame.add(selector);
 		
-		//level interface
-		LevelInterface li=new LevelInterface(selector,levelView);
-		frame.addMouseListener(li);
+		//add inspector
+		Inspector inspector=new Inspector(frame);
+		inspector.setBounds(600,0,400,600);
+		inspector.setLayout(null);
+		inspector.setVisible(true);
+		inspector.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		frame.add(inspector);
 		
+		//level interface
+		LevelInterface li=new LevelInterface(selector,levelView,inspector);
+		frame.addMouseListener(li);
+		frame.addMouseMotionListener(li);
+		frame.requestFocus();
 		
 		//looping
 		int frameUpdate=20;//number of milliseconds between frame updates

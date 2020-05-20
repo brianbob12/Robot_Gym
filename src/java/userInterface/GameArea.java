@@ -81,9 +81,17 @@ public class GameArea extends JPanel {
 			//check if it is in bounds
 			if((sel.x+sel.width>xLOW&&sel.y+sel.height>yLOW)||(sel.x<xUP&&sel.y<yUP)) {
 				//draw sel
+				
+				//HIGHLIGHT
+				if(sel.highlight) {
+					g.setColor(Color.YELLOW);
+					g.fillRect((int)((sel.x-xLOW)*convRatioX)-1,(int) (this.getHeight()-(sel.y-yLOW)*convRatioY)+1,(int)(sel.width*convRatioX)+2,-(int)(sel.height*convRatioY)-2);
+				}
+				
 				if(sel.color!=null) {
 					g.setColor(sel.color);
 				}
+				
 				//if the color is null it will be drawn with the last previously drawn color
 				//although this is not likely to occur.
 				g.fillRect((int)((sel.x-xLOW)*convRatioX),(int) (this.getHeight()-(sel.y-yLOW)*convRatioY),(int)(sel.width*convRatioX),-(int)(sel.height*convRatioY));
@@ -127,4 +135,5 @@ public class GameArea extends JPanel {
 	public Level getLevel() {
 		return this.level;
 	}
+
 }
