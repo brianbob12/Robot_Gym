@@ -61,6 +61,7 @@ public class LevelInterface extends MouseAdapter{
 				newObj=new Enemy((float)levelX,(float)levelY,10F,10F,this.area.getLevel(),100);
 				newObj.color=Color.BLUE;
 			}
+			newObj.collidable=false;
 			this.area.getLevel().addObject(newObj);
 		}
 		
@@ -86,6 +87,7 @@ public class LevelInterface extends MouseAdapter{
 							}
 							this.selected=sel;
 							this.selected.highlight=true;
+							this.insp.setSelected(this.selected);
 							this.holdingOffsetX=levelX-sel.x;
 							this.holdingOffsetY=levelY-sel.y;
 						}
@@ -105,8 +107,34 @@ public class LevelInterface extends MouseAdapter{
 				float[] o=this.levelSpaceMouse(e);
 				float levelX=o[0];
 				float levelY=o[1];
+				float oldX=this.holding.x;
+				float oldY=this.holding.y;
 				this.holding.x=levelX-this.holdingOffsetX;
 				this.holding.y=levelY-this.holdingOffsetY;
+				//block movement at zero
+				if (this.holding.x<0) {
+					this.holding.x=0;
+				}
+				if(this.holding.y<0) {
+					this.holding.y=0;
+				}
+				
+				//collision checks
+				if(this.holding.collidable) {
+					boolean collided=false;
+					for(GameObject sel:this.area.getLevel().objects) {
+						if(sel!=this.holding) {
+							if(this.holding.colliding(sel)){
+								collided=true;
+								break;
+							}
+						}
+					}
+					if(collided) {
+						this.holding.x=oldX;
+						this.holding.y=oldY;
+					}
+				}
 			}
 		}
 	}

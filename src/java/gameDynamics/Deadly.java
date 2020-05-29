@@ -21,6 +21,7 @@ public class Deadly extends Destructible {
 			float maxHealth) {
 		super(x, y, width, height, gravity, moveable, level, maxHealth);
 		this.harmable=false;//Default choice
+		this.type=objectType.DEADLY;
 	}
 
 }
