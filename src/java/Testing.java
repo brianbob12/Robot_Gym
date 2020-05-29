@@ -77,6 +77,7 @@ public class Testing {
 		testingLevelView.dynamicViewCenter=true;
 		testingLevelView.viewCenterOffsetY=-30;
 		testingLevelView.viewCenterOffsetX=-50;
+		//testingLevelView.setBackgroundImage("assets/images/BackgroundBlue.png", 50);
 		frame.add(testingLevelView);
 		
 		

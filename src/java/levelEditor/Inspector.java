@@ -40,6 +40,8 @@ public class Inspector extends JPanel {
 	public JCheckBox gravityBox;
 	public JCheckBox moveableBox;
 	public JCheckBox collidableBox;
+	public JCheckBox harmableBox;
+	
 	
 	public Inspector(JFrame frame) {
 		this.frame=frame;
