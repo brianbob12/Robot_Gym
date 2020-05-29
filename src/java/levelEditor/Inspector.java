@@ -73,18 +73,21 @@ public class Inspector extends JPanel {
 		this.gravityBox=new JCheckBox("Gravity");
 		this.gravityBox.setLayout(null);
 		this.gravityBox.setVisible(false);
-		this.gravityBox.setBounds(10,110,150,20);
+		this.gravityBox.setBounds(10,110,100,20);
 		this.add(gravityBox);
+		this.gravityBox.addItemListener(new ItemHandler(this));
 		this.moveableBox=new JCheckBox("Moveable");
 		this.moveableBox.setLayout(null);
 		this.moveableBox.setVisible(false);
-		this.moveableBox.setBounds(160,110,150,20);
+		this.moveableBox.setBounds(110,110,100,20);
 		this.add(moveableBox);
+		this.moveableBox.addItemListener(new ItemHandler(this));
 		this.collidableBox=new JCheckBox("Collidable");
 		this.collidableBox.setLayout(null);
 		this.collidableBox.setVisible(false);
-		this.collidableBox.setBounds(310,110,150,20);
+		this.collidableBox.setBounds(210,110,100,20);
 		this.add(collidableBox);
+		this.collidableBox.addItemListener(new ItemHandler(this));
 	}
 
 	public GameObject getSelected(){
@@ -99,6 +102,12 @@ public class Inspector extends JPanel {
 			this.gravityBox.setVisible(false);
 			this.moveableBox.setVisible(false);
 			this.collidableBox.setVisible(false);
+		}
+		else {
+			//set boolean values
+			this.gravityBox.setSelected(this.selected.gravity);
+			this.moveableBox.setSelected(this.selected.moveable);
+			this.collidableBox.setSelected(this.selected.collidable);
 		}
 	}
 	//clears the panel by making components inviable
@@ -172,21 +181,7 @@ public class Inspector extends JPanel {
 				}
 			}
 		}
-		class ItemHandler implements ItemListener{
-			
-			Inspector parent;
-			public ItemHandler(Inspector parent) {
-				this.parent=parent;
-			}
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				JCheckBox source= (JCheckBox) e.getSource();
-				if(source==this.parent.gravityBox) {
-					
-				}
-				
-			}
-		}
+
 
 		@Override
 		public void keyReleased(KeyEvent e) {
@@ -198,6 +193,28 @@ public class Inspector extends JPanel {
 		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
 			
+		}
+	}
+	class ItemHandler implements ItemListener{
+		
+		Inspector parent;
+		public ItemHandler(Inspector parent) {
+			this.parent=parent;
+		}
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			JCheckBox source= (JCheckBox) e.getSource();
+			if(source==this.parent.gravityBox) {
+				this.parent.selected.gravity=source.isSelected();
+			}
+			else if(source==this.parent.moveableBox) {
+				this.parent.selected.moveable=source.isSelected();
+			}
+			else if(source==this.parent.collidableBox) {
+				this.parent.selected.collidable=source.isSelected();
+			}
+			//this refreshes values
+			this.parent.setSelected(this.parent.getSelected());
 		}
 	}
 }

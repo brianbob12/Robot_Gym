@@ -21,6 +21,7 @@ public class Enemy extends Destructible {
 			float maxHealth) {
 		super(x, y, width, height, true, true, level, maxHealth);
 		this.type=objectType.ENEMY;
+		this.collidable=true;
 	}
 
 }

@@ -52,16 +52,17 @@ public class LevelInterface extends MouseAdapter{
 			if(sel.sel==Selector.AddSelected.WALKABLE) {
 				newObj=new GameObject((float)levelX,(float)levelY,10F,10F,false,false,this.area.getLevel());
 				newObj.color=Color.GRAY;
+				newObj.collidable=false;
 			}
 			else if (sel.sel==Selector.AddSelected.DEADLY){
 				newObj=new Deadly((float)levelX,(float)levelY,10F,10F,false,false,this.area.getLevel(),1);
 				newObj.color=Color.RED;
+				newObj.collidable=false;
 			}
 			else {//as sel is enum sel =Selector.AddSelected.ENEMY
 				newObj=new Enemy((float)levelX,(float)levelY,10F,10F,this.area.getLevel(),100);
 				newObj.color=Color.BLUE;
 			}
-			newObj.collidable=false;
 			this.area.getLevel().addObject(newObj);
 		}
 		
@@ -124,7 +125,7 @@ public class LevelInterface extends MouseAdapter{
 					boolean collided=false;
 					for(GameObject sel:this.area.getLevel().objects) {
 						if(sel!=this.holding) {
-							if(this.holding.colliding(sel)){
+							if(this.holding.colliding(sel)&&sel.collidable){
 								collided=true;
 								break;
 							}
