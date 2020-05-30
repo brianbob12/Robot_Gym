@@ -41,6 +41,8 @@ public class Inspector extends JPanel {
 	public JCheckBox moveableBox;
 	public JCheckBox collidableBox;
 	public JCheckBox harmableBox;
+	public JTextArea healthInp;
+	private JLabel healthLabel;
 	
 	
 	public Inspector(JFrame frame) {
@@ -71,6 +73,20 @@ public class Inspector extends JPanel {
 		this.heightLabel.setVisible(false);
 		this.heightLabel.setBounds(50,70,200,20);
 		this.add(this.heightLabel);
+		
+		//health input
+		this.healthInp= new JTextArea();
+		this.healthInp.setLayout(null);
+		this.healthInp.setVisible(false);
+		this.healthInp.setBounds(50,160,200,20);
+		this.add(this.healthInp);
+		this.healthInp.addKeyListener(new Handler(this));
+		
+		this.healthLabel= new JLabel("MaxHealth");
+		this.healthLabel.setVisible(false);
+		this.healthLabel.setBounds(50,130,200,20);
+		this.add(this.healthLabel);
+		
 		//boxes
 		this.gravityBox=new JCheckBox("Gravity");
 		this.gravityBox.setLayout(null);
@@ -90,6 +106,12 @@ public class Inspector extends JPanel {
 		this.collidableBox.setBounds(210,110,100,20);
 		this.add(collidableBox);
 		this.collidableBox.addItemListener(new ItemHandler(this));
+		this.harmableBox=new JCheckBox("Harmable");
+		this.harmableBox.setLayout(null);
+		this.harmableBox.setVisible(false);
+		this.harmableBox.setBounds(10,190,100,20);
+		this.add(harmableBox);
+		this.harmableBox.addItemListener(new ItemHandler(this));
 	}
 
 	public GameObject getSelected(){
