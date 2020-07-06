@@ -6,6 +6,7 @@ package gameDynamics;
  *
  */
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 
@@ -16,10 +17,10 @@ import java.util.List;
  *
  */
 
-public class Level {
+public class Level implements Serializable {
 	
 	public List<GameObject> objects=new ArrayList<GameObject>();//stores the gameobjects in the level
-	public List<Agent> agents=new ArrayList<Agent>();
+	public transient List<Agent> agents=new ArrayList<Agent>();
 	public float gravity=(float) 0.1;
 	public float endGoal;//the x value that shows the end of the level
 	public float startPosition;
@@ -89,4 +90,5 @@ public class Level {
 			sel.exportData("");
 		}
 	}
+	
 }

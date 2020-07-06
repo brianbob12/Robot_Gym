@@ -18,7 +18,7 @@ import tools.Keyboard;
 
 public class Player extends Competitor{
 	
-	Keyboard keyboard;
+	private Keyboard keyboard;
 	
 	public Player(float x,float y,Level level,Keyboard keyboard) {
 		//the values for player height width and maxHealth will eventually imported from a config file

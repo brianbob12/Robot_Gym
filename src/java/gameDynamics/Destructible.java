@@ -25,7 +25,7 @@ public class Destructible extends GameObject {
 	
 	public Destructible(float x, float y, float width, float height, boolean gravity, boolean moveable,Level level,float maxHealth) {
 		super(x, y, width, height, gravity, moveable,level);
-		this.maxHealth=maxHealth;
+		this.setMaxHealth(maxHealth);
 		this.currentHealth=maxHealth;
 		this.dead=false;
 	}
@@ -41,8 +41,8 @@ public class Destructible extends GameObject {
 	
 	public void heal(float h) {
 		this.currentHealth+=h;
-		if (this.currentHealth>this.maxHealth) {
-			this.currentHealth=this.maxHealth;
+		if (this.currentHealth>this.getMaxHealth()) {
+			this.currentHealth=this.getMaxHealth();
 		}
 	}
 	
@@ -51,6 +51,13 @@ public class Destructible extends GameObject {
 			this.dead=true;
 			this.level.objects.remove(this);
 		}
+	}
+	public void setMaxHealth(float h) {
+		this.maxHealth=h;
+	}
+
+	public float getMaxHealth() {
+		return maxHealth;
 	}
 
 }

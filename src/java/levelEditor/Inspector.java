@@ -6,6 +6,7 @@ package levelEditor;
  *
  */
 import java.awt.Color;
+import java.awt.Font;
 
 /**
  * 
@@ -17,6 +18,7 @@ import java.awt.Color;
 import java.awt.event.*;
 import gameDynamics.GameObject;
 import gameDynamics.GameObject.objectType;
+import gameDynamics.Destructible;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
@@ -43,10 +45,19 @@ public class Inspector extends JPanel {
 	public JCheckBox harmableBox;
 	public JTextArea healthInp;
 	private JLabel healthLabel;
+	private JLabel typeLabel;
 	
 	
 	public Inspector(JFrame frame) {
 		this.frame=frame;
+		
+		//type input
+		this.typeLabel=new JLabel();
+		this.typeLabel.setLayout(null);
+		this.typeLabel.setVisible(false);
+		this.typeLabel.setBounds(50,15,200,25);
+		this.typeLabel.setFont(new Font("Tahoma",Font.BOLD,18));
+		this.add(this.typeLabel);
 		
 		//width input
 		this.widthInp= new JTextArea();
@@ -123,15 +134,42 @@ public class Inspector extends JPanel {
 		this.heightInp.setText(Float.toString(this.selected.height));
 		this.showAll();
 		if(this.selected.type==objectType.ENEMY) {
+			this.typeLabel.setText("Enemy");
 			this.gravityBox.setVisible(false);
 			this.moveableBox.setVisible(false);
 			this.collidableBox.setVisible(false);
+			this.harmableBox.setVisible(true);
+			this.harmableBox.setSelected(((Destructible)this.selected).harmable);
+			this.healthInp.setText(Float.toString(((Destructible)this.selected).getMaxHealth()));
+			this.healthInp.setVisible(true);
+			this.healthLabel.setVisible(true);
 		}
-		else {
-			//set boolean values
+		else if(this.selected.type==objectType.DEADLY) {
+			this.typeLabel.setText("Deadly");
+			this.gravityBox.setVisible(true);
+			this.moveableBox.setVisible(true);
+			this.collidableBox.setVisible(true);
+			this.harmableBox.setVisible(true);
+			this.harmableBox.setSelected(((Destructible)this.selected).harmable);
 			this.gravityBox.setSelected(this.selected.gravity);
 			this.moveableBox.setSelected(this.selected.moveable);
 			this.collidableBox.setSelected(this.selected.collidable);
+			this.healthInp.setText(Float.toString(((Destructible)this.selected).getMaxHealth()));
+			this.healthInp.setVisible(true);
+			this.healthLabel.setVisible(true);
+		}
+		else {//for walkable
+			this.typeLabel.setText("Walkable");
+			//set boolean values
+			this.gravityBox.setVisible(true);
+			this.moveableBox.setVisible(true);
+			this.collidableBox.setVisible(true);
+			this.gravityBox.setSelected(this.selected.gravity);
+			this.moveableBox.setSelected(this.selected.moveable);
+			this.collidableBox.setSelected(this.selected.collidable);
+			this.harmableBox.setVisible(false);
+			this.healthInp.setVisible(false);
+			this.healthLabel.setVisible(false);
 		}
 	}
 	//clears the panel by making components inviable
@@ -143,6 +181,10 @@ public class Inspector extends JPanel {
 		this.gravityBox.setVisible(false);
 		this.moveableBox.setVisible(false);
 		this.collidableBox.setVisible(false);
+		this.harmableBox.setVisible(false);
+		this.healthInp.setVisible(false);
+		this.healthLabel.setVisible(false);
+		this.typeLabel.setVisible(false);
 	}
 	//shows all cleared components
 	public void showAll() {
@@ -153,6 +195,10 @@ public class Inspector extends JPanel {
 		this.gravityBox.setVisible(true);
 		this.moveableBox.setVisible(true);
 		this.collidableBox.setVisible(true);
+		this.harmableBox.setVisible(true);
+		this.healthInp.setVisible(true);
+		this.healthLabel.setVisible(true);
+		this.typeLabel.setVisible(true);
 	}
 
 	
@@ -204,6 +250,26 @@ public class Inspector extends JPanel {
 					this.parent.setSelected(this.parent.getSelected());
 				}
 			}
+			else if(source==this.parent.healthInp) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					this.parent.frame.requestFocus();
+					//may fail
+					try {
+						((Destructible)this.parent.getSelected()).currentHealth=Float.parseFloat(source.getText());
+						((Destructible)this.parent.getSelected()).setMaxHealth(Float.parseFloat(source.getText()));
+						source.setForeground(Color.BLACK);
+						
+					}
+					catch(NumberFormatException ex) {
+						source.setForeground(Color.RED);
+					}
+					catch(Exception ex) {
+						System.out.println(ex);
+					}
+					//this refreshes values
+					this.parent.setSelected(this.parent.getSelected());
+				}
+			}
 		}
 
 
@@ -236,6 +302,9 @@ public class Inspector extends JPanel {
 			}
 			else if(source==this.parent.collidableBox) {
 				this.parent.selected.collidable=source.isSelected();
+			}
+			else if(source==this.parent.harmableBox) {
+				((Destructible) this.parent.selected).harmable=source.isSelected();
 			}
 			//this refreshes values
 			this.parent.setSelected(this.parent.getSelected());

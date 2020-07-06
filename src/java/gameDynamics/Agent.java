@@ -32,7 +32,7 @@ public class Agent extends Competitor {
 	private List<String> activation;//stores activation functions for each layer
 	
 	//observation stuff
-	private Grid myGrid;
+	private transient Grid myGrid;
 	private int nGh=12;//horizontal view range(grid space)
 	private int nGv=8;//vertical view range(grid space)
 	private int sG=7;//grid cell size in level space

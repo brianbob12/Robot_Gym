@@ -6,6 +6,7 @@ package gameDynamics;
  *
  */
 import java.awt.*;
+import java.io.Serializable;
 import java.lang.Math;
 
 /**
@@ -15,7 +16,7 @@ import java.lang.Math;
  *
  */
 
-public class GameObject {
+public class GameObject implements Serializable {
 	
 	//dynamics
 	public float x;//x level-space position(this differs from position on screen)

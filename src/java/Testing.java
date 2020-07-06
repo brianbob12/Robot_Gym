@@ -6,6 +6,12 @@
  */
 
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import javax.swing.*;
 
 import gameDynamics.Agent;
@@ -66,8 +72,24 @@ public class Testing {
 		testingLevel.addObject(floor);
 		testingLevel.endGoal=300;
 		testingLevel.startPosition=0;
-		
 		testingLevel.setUpAgents();
+		
+		
+		//import level area
+		/*
+		Level testingLevel = null;
+		try {
+			FileInputStream fis = new FileInputStream("playData/testtinglevel.lvl");
+		    ObjectInputStream ois = new ObjectInputStream(fis);
+		    testingLevel=(Level)ois.readObject();
+		    ois.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		testingLevel.setUpAgents();
+		*/
 		
 		GameArea testingLevelView=new GameArea(testingLevel);
 		testingLevelView.setBounds(0,0,800,800);
@@ -80,7 +102,17 @@ public class Testing {
 		//testingLevelView.setBackgroundImage("assets/images/BackgroundBlue.png", 50);
 		frame.add(testingLevelView);
 		
-		
+		//writing level
+		/*
+		try {
+			FileOutputStream fos= new FileOutputStream("playData/testtinglevel.lvl");
+			ObjectOutputStream oos=new ObjectOutputStream(fos);
+			oos.writeObject(testingLevel);
+			oos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		*/
 		
 		//running the game
 		int physicsUpdate=20;//number of milliseconds between physics Updates
