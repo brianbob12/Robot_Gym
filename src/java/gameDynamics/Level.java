@@ -91,4 +91,8 @@ public class Level implements Serializable {
 		}
 	}
 	
+	public void postImportSetup() {
+		agents=new ArrayList<Agent>();
+	}
+	
 }

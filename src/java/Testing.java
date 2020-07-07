@@ -44,9 +44,11 @@ public class Testing {
 		frame.addKeyListener(myKeyboard);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		
+		//manual setup level
+		/*
 		Level testingLevel=new Level();
-		GameObject player=new Player(110,45,testingLevel,myKeyboard);
-		player.color=Color.red;
+		
 		GameObject bloc2=new GameObject(150,100,10,10,true,true,testingLevel);
 		bloc2.color=Color.blue;
 		bloc2.vx=(float)-0.5;
@@ -57,26 +59,18 @@ public class Testing {
 		bloc4.color=Color.cyan;
 		GameObject floor=new GameObject(100,30,200,10,false,false,testingLevel);
 		floor.color=Color.black;
-		
-		Agent agent=new Agent(120,45,testingLevel);
-		agent.name="A1";
-		agent.importNetwork("playData/net1");
-		agent.color=Color.green;
-		
-		
-		testingLevel.addAgent(agent);
-		testingLevel.addObject(player);//note: player should always be added after agents
 		testingLevel.addObject(bloc2);
 		testingLevel.addObject(bloc3);
 		testingLevel.addObject(bloc4);
 		testingLevel.addObject(floor);
 		testingLevel.endGoal=300;
 		testingLevel.startPosition=0;
-		testingLevel.setUpAgents();
+		*/
+		
 		
 		
 		//import level area
-		/*
+		
 		Level testingLevel = null;
 		try {
 			FileInputStream fis = new FileInputStream("playData/testtinglevel.lvl");
@@ -88,19 +82,9 @@ public class Testing {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		testingLevel.setUpAgents();
-		*/
+		testingLevel.postImportSetup();
 		
-		GameArea testingLevelView=new GameArea(testingLevel);
-		testingLevelView.setBounds(0,0,800,800);
-		testingLevelView.setLayout(null);
-		testingLevelView.setVisible(true);
-		testingLevelView.fixedViewCenter=player;
-		testingLevelView.dynamicViewCenter=true;
-		testingLevelView.viewCenterOffsetY=-30;
-		testingLevelView.viewCenterOffsetX=-50;
-		//testingLevelView.setBackgroundImage("assets/images/BackgroundBlue.png", 50);
-		frame.add(testingLevelView);
+		
 		
 		//writing level
 		/*
@@ -113,6 +97,35 @@ public class Testing {
 			e.printStackTrace();
 		}
 		*/
+		
+		//adding agents
+		Agent agent=new Agent(120,45,testingLevel);
+		agent.name="A1";
+		agent.importNetwork("playData/net1");
+		agent.color=Color.green;
+		
+		
+		testingLevel.addAgent(agent);
+		
+		
+		testingLevel.setUpAgents();
+		
+		GameObject player=new Player(110,45,testingLevel,myKeyboard);
+		player.color=Color.red;
+		testingLevel.addObject(player);//player should always be added after agents
+		
+		GameArea testingLevelView=new GameArea(testingLevel);
+		testingLevelView.setBounds(0,0,800,800);
+		testingLevelView.setLayout(null);
+		testingLevelView.setVisible(true);
+		testingLevelView.fixedViewCenter=player;
+		testingLevelView.dynamicViewCenter=true;
+		testingLevelView.viewCenterOffsetY=-30;
+		testingLevelView.viewCenterOffsetX=-50;
+		//testingLevelView.setBackgroundImage("assets/images/BackgroundBlue.png", 50);
+		frame.add(testingLevelView);
+		
+		
 		
 		//running the game
 		int physicsUpdate=20;//number of milliseconds between physics Updates
