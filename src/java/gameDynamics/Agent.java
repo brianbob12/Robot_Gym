@@ -9,6 +9,7 @@ import java.util.*;
 
 import tools.FileManager;
 
+import java.io.IOException;
 import java.lang.Math;
 /**
  * Agent
@@ -25,7 +26,6 @@ public class Agent extends Competitor {
 	//Matrices are used here for easer computation
 	private List<Matrix> weights;
 	private List<Matrix> biases;
-	private FileManager myFileManager;
 	private int stateSpace=864;//better to import this from a config file
 	private int actionSpace=18;
 	private List<Integer> nHidden;
@@ -37,6 +37,8 @@ public class Agent extends Competitor {
 	private int nGv=8;//vertical view range(grid space)
 	private int sG=7;//grid cell size in level space
 	private int SGS;//number of grid observations in the observed state
+	
+	//I think this is redundant... not sure
 	private List<List<Integer>> frames;//stores the grid outputs before evaluation max length of SGS
 	
 	//current action variables
@@ -57,14 +59,12 @@ public class Agent extends Competitor {
 	
 	public Agent(float x, float y, Level level) {
 		super(x, y, 10F, 20F, level, 100F);
-		
-		this.myFileManager=new FileManager();
 	}
 	
 	//read network from csv
-	public void importNetwork(String path) {
+	public void importNetwork(String path) throws IOException {
 		//read hyper.txt for general data
-		List<String> hyperData=myFileManager.readByLine(path+"/hyper.txt");
+		List<String> hyperData=FileManager.readByLine(path+"/hyper.txt");
 		String[]  hiddenData=hyperData.get(2).split(",");
 		this.nHidden=new ArrayList<Integer>();
 		for(String i: hiddenData) {
@@ -79,23 +79,23 @@ public class Agent extends Competitor {
 		this.weights=new ArrayList<Matrix>();
 		this.biases=new ArrayList<Matrix>();
 		//first hidden layer
-		this.weights.add(new Matrix(this.nHidden.get(0),this.stateSpace));//note: stateSpace is equivilent to input layer size
-		this.weights.get(0).setData(myFileManager.readRectangleCSV(path+"/w0.csv"));
+		this.weights.add(new Matrix(this.nHidden.get(0),this.stateSpace));//note: stateSpace is equivalent to input layer size
+		this.weights.get(0).setData(FileManager.readRectangleCSV(path+"/w0.csv"));
 		this.biases.add(new Matrix(this.nHidden.get(0),1));
-		this.biases.get(0).setData(myFileManager.readRectangleCSV(path+"/b0.csv"));
+		this.biases.get(0).setData(FileManager.readRectangleCSV(path+"/b0.csv"));
 		//for each layer excluding the first hidden layer and the output layer
 		for(int i=1;i<this.nHidden.size();i++) {
 			//import weights
 			this.weights.add(new Matrix(this.nHidden.get(i),this.nHidden.get(i-1)));
-			this.weights.get(i).setData(myFileManager.readRectangleCSV(path+"/w"+Integer.toString(i)+".csv"));
+			this.weights.get(i).setData(FileManager.readRectangleCSV(path+"/w"+Integer.toString(i)+".csv"));
 			this.biases.add(new Matrix(this.nHidden.get(i),1));
-			this.biases.get(i).setData(myFileManager.readRectangleCSV(path+"/b"+Integer.toString(i)+".csv"));
+			this.biases.get(i).setData(FileManager.readRectangleCSV(path+"/b"+Integer.toString(i)+".csv"));
 		}
 		//output layer
-		this.weights.add(new Matrix(this.actionSpace,this.nHidden.get(this.nHidden.size()-1)));//note: stateSpace is equivilent to input layer size
-		this.weights.get(this.nHidden.size()).setData(myFileManager.readRectangleCSV(path+"/w"+Integer.toString(this.nHidden.size())+".csv"));
+		this.weights.add(new Matrix(this.actionSpace,this.nHidden.get(this.nHidden.size()-1)));//note: stateSpace is equivalent to input layer size
+		this.weights.get(this.nHidden.size()).setData(FileManager.readRectangleCSV(path+"/w"+Integer.toString(this.nHidden.size())+".csv"));
 		this.biases.add(new Matrix(this.actionSpace,1));
-		this.biases.get(this.nHidden.size()).setData(myFileManager.readRectangleCSV(path+"/b"+Integer.toString(this.nHidden.size())+".csv"));
+		this.biases.get(this.nHidden.size()).setData(FileManager.readRectangleCSV(path+"/b"+Integer.toString(this.nHidden.size())+".csv"));
 	}
 	
 	//Evaluates the neural network for a single input
@@ -295,7 +295,7 @@ public class Agent extends Competitor {
 	
 	//decides on the value of this (state,action,reward,nextState) for learning
 	//next state is given as a state action pair and is evaluated by the python section later on in the training process
-	//exports if it is generally unique
+	//saves datapoint if it is generally unique
 	private void saveData(List<Integer> state,int actionA,int actionB,int actionC,float reward,List<Integer> statePrime,int actionAPrime,int actionBPrime,int actionCPrime) {
 		//flatten Actions
 		//oneHot actions
@@ -309,6 +309,7 @@ public class Agent extends Competitor {
 		nextAction.set(actionCPrime*6+actionBPrime*2+actionAPrime, 1);
 		AgentDataPoint tad=new AgentDataPoint(state,action,reward,statePrime,nextAction);
 		//decide if relevant
+		//THIS IS VERY INFLUENTIAL on the training process
 		for(AgentDataPoint i: this.data) {
 			if(tad.similar(i)) {
 				return;
@@ -323,9 +324,16 @@ public class Agent extends Competitor {
 	public void die() {
 		super.die();
 	}
+	
 	//exports the saved experience data
-	public void exportData(String path) {
+	public void exportData(String path) throws IOException{
+		List<String> toExport = new ArrayList<String>();
 		
+		//iterate over datapoints
+		for(AgentDataPoint point: data) {
+			toExport.add(point.toString());
+		}
+		FileManager.writeToTxt(path, toExport);
 	}
 	
 	public void setEpsilon(float val) {
@@ -337,15 +345,20 @@ public class Agent extends Competitor {
 	 * Holds data points in the tuple(state,action,reward,nextstate,nextaction)
 	 * Later, on the python side the nextstate,nextaction is resolved to a sum of discounted future rewards(Q-value)
 	 * This is then fed as data to train the neural network.
+	 * 
+	 * bellman equation(we will use this to train NNs)
+	 * Q(s,a) = r(s,a) + gamma*Q(s',a')
 	 */
 
 	public class AgentDataPoint {
 		
-		private List<Integer> state;
-		private List<Integer> action;
-		private float reward;
-		private List<Integer> nextState;
-		private List<Integer> nextAction;
+		private List<Integer> state;//one state as input to NN
+		private List<Integer> action;//one output of NN
+		private float reward;//reward as float
+		private List<Integer> nextState;//next state as input to NN
+		private List<Integer> nextAction;//next action as input to NN
+		
+		
 		
 		public AgentDataPoint(List<Integer> state,List<Integer> action,float reward,List<Integer> nextState,List<Integer> nextAction){
 			this.state=state;
@@ -356,7 +369,8 @@ public class Agent extends Competitor {
 		}
 		//outputs the data point as a string
 		//data is split by semicolons and then commas
-		public String outputAsstring() {
+		@Override
+		public String toString() {
 			String out="";
 			for(int i:this.state) {
 				out+=Integer.toString(i);
@@ -403,9 +417,11 @@ public class Agent extends Competitor {
 			return false;
 		}
 		
+		//this is for similarity testing
 		public List<Integer> getState(){
 			return this.state;
 		}
+		//this is for similarity testing
 		public List<Integer> getNextState(){
 			return this.nextState;
 		}

@@ -6,6 +6,7 @@ package gameDynamics;
  *
  */
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;
@@ -86,8 +87,14 @@ public class Level implements Serializable {
 	}
 	
 	public void endLevel() {
+		//TODO work out hot to find a path for this data
+		//TODO actually handle IOExceptoin
 		for(Agent sel: this.agents) {
-			sel.exportData("");
+			try {
+				sel.exportData("");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

@@ -15,7 +15,7 @@ import gameDynamics.GameObject.objectType;
  * There are never going to be an instances of Competitor, only subclasses
  *
  */
-public class Competitor extends Destructible {
+public abstract class Competitor extends Destructible {
 	
 	public float moveScore;//score derived from moving
 	public float enemiesScore;//score derived from killing enemies
@@ -93,14 +93,8 @@ public class Competitor extends Destructible {
 	}
 	
 	//these only exists for the subclasses
-	public int choseActionA() {
-		return 0;
-	}
-	public int choseActionB() {
-		return 0;
-	}
-	public int choseActionC() {
-		return 0;
-	}
+	public abstract int choseActionA();
+	public abstract int choseActionB();
+	public abstract int choseActionC();
 
 }

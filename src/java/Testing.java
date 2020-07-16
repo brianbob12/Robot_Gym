@@ -89,7 +89,7 @@ public class Testing {
 		//writing level
 		/*
 		try {
-			FileOutputStream fos= new FileOutputStream("playData/testtinglevel.lvl");
+			FileOutputStream fos= new FileOutputStream("gameData/testtinglevel.lvl");
 			ObjectOutputStream oos=new ObjectOutputStream(fos);
 			oos.writeObject(testingLevel);
 			oos.flush();
@@ -101,7 +101,12 @@ public class Testing {
 		//adding agents
 		Agent agent=new Agent(120,45,testingLevel);
 		agent.name="A1";
-		agent.importNetwork("playData/net1");
+		try {
+			agent.importNetwork("playData/net1");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		agent.color=Color.green;
 		
 		
