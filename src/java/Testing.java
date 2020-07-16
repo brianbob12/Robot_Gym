@@ -17,6 +17,7 @@ import javax.swing.*;
 import gameDynamics.Agent;
 import gameDynamics.GameObject;
 import gameDynamics.Level;
+import gameDynamics.LevelFileManager;
 import gameDynamics.Player;
 import tools.Keyboard;
 import userInterface.GameArea;
@@ -70,32 +71,12 @@ public class Testing {
 		
 		
 		//import level area
-		/*
-		Level testingLevel = null;
-		try {
-			FileInputStream fis = new FileInputStream("playData/testtinglevel.lvl");
-		    ObjectInputStream ois = new ObjectInputStream(fis);
-		    testingLevel=(Level)ois.readObject();
-		    ois.close();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		testingLevel.postImportSetup();
-		*/
+		//Level testingLevel=LevelFileManager.loadLevel("gameData/testtinglevel.lvl");
 		
 		
 		//writing level
 		/*
-		try {
-			FileOutputStream fos= new FileOutputStream("gameData/testtinglevel.lvl");
-			ObjectOutputStream oos=new ObjectOutputStream(fos);
-			oos.writeObject(testingLevel);
-			oos.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		LevelFileManager.saveLevel(testingLevel,"gameData/testtinglevel.lvl")
 		*/
 		
 		//adding agents
