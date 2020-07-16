@@ -7,10 +7,16 @@ package levelEditor;
  */
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import gameDynamics.GameObject;
 import gameDynamics.Level;
+import gameDynamics.LevelFileManager;
 import tools.Keyboard;
 import userInterface.GameArea;
 
@@ -23,7 +29,9 @@ import java.util.*;
  *
  */
 public class LevelEditor {
-
+	
+	static Level level;//the level being edited
+	
 	public static void main(String[] args) {
 		
 		//setup frame
@@ -37,7 +45,7 @@ public class LevelEditor {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
-		Level level=newLevel();
+		level=newLevel();
 		
 		//add level view
 		GameArea levelView=new GameArea(level);
@@ -69,6 +77,40 @@ public class LevelEditor {
 		frame.addMouseListener(li);
 		frame.addMouseMotionListener(li);
 		frame.requestFocus();
+		
+		//save and load buttons
+		JButton loadButton= new JButton();
+		loadButton.setText("Import Level");
+		loadButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				JFileChooser chooser = new JFileChooser("gameData");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Level Files Only","lvl");
+				chooser.setFileFilter(filter);
+	            int status = chooser.showOpenDialog(null);
+	            if (status == JFileChooser.APPROVE_OPTION) {
+	            	String path= chooser.getSelectedFile().getAbsolutePath();
+	            	try {
+						level=LevelFileManager.loadLevel(path);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	            }
+			}
+			
+		});
+		loadButton.setVisible(true);
+		loadButton.setBounds(860,870,120,30);
+		frame.add(loadButton);
+		//save and load buttons
+		JButton saveButton= new JButton();
+		saveButton.setText("Save Level");
+		saveButton.setVisible(true);
+		saveButton.setBounds(860,910,120,30);
+		frame.add(saveButton);
+		
 		
 		//looping
 		int frameUpdate=20;//number of milliseconds between frame updates
