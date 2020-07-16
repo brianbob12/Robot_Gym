@@ -46,7 +46,7 @@ public class Testing {
 		
 		
 		//manual setup level
-		/*
+		
 		Level testingLevel=new Level();
 		
 		GameObject bloc2=new GameObject(150,100,10,10,true,true,testingLevel);
@@ -65,12 +65,12 @@ public class Testing {
 		testingLevel.addObject(floor);
 		testingLevel.endGoal=300;
 		testingLevel.startPosition=0;
-		*/
+		
 		
 		
 		
 		//import level area
-		
+		/*
 		Level testingLevel = null;
 		try {
 			FileInputStream fis = new FileInputStream("playData/testtinglevel.lvl");
@@ -83,7 +83,7 @@ public class Testing {
 			e.printStackTrace();
 		}
 		testingLevel.postImportSetup();
-		
+		*/
 		
 		
 		//writing level

@@ -9,6 +9,8 @@ import java.awt.*;
 import java.io.Serializable;
 import java.lang.Math;
 
+import userInterface.GameArea;
+
 /**
  * GameObject
  * 
@@ -219,5 +221,23 @@ public class GameObject implements Serializable {
 	
 	public boolean movingTowards(GameObject hit) {
 		return (this.movingX(hit)||this.movingY(hit));
+	}
+	
+	//draw GameObject to graphics objects
+	//overriden in children
+	public void draw(Graphics g,GameArea area,float xLOW,float yLOW,float xUP,float yUP,float convRatioX,float convRatioY) {
+		//HIGHLIGHT
+		if(highlight) {
+			g.setColor(Color.YELLOW);
+			g.fillRect((int)((x-xLOW)*convRatioX)-1,(int) (area.getHeight()-(y-yLOW)*convRatioY)+1,(int)(width*convRatioX)+2,-(int)(height*convRatioY)-2);
+		}
+		
+		if(color!=null) {
+			g.setColor(color);
+		}
+		
+		//if the color is null it will be drawn with the last previously drawn color
+		//although this is not likely to occur.
+		g.fillRect((int)((x-xLOW)*convRatioX),(int) (area.getHeight()-(y-yLOW)*convRatioY),(int)(width*convRatioX),-(int)(height*convRatioY));
 	}
 }
