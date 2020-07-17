@@ -27,7 +27,7 @@ import java.io.File;
 
 public class GameArea extends JPanel {
 	
-	Level level;
+	private Level level;
 	int viewX=100;//how far the gameArea is allowed to show in the Level-x direction
 	int viewY=100;//how far the gameArea is allowed to show in the Level-y direction
 	
@@ -50,6 +50,11 @@ public class GameArea extends JPanel {
 		//this.setBackground(Color.black);
 		repaint();
 		
+	}
+	
+	//for the level editor
+	public void setLevel(Level level) {
+		this.level=level;
 	}
 	
 	public void paint(Graphics g) {

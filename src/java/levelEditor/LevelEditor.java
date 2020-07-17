@@ -78,7 +78,7 @@ public class LevelEditor {
 		frame.addMouseMotionListener(li);
 		frame.requestFocus();
 		
-		//save and load buttons
+		//load button
 		JButton loadButton= new JButton();
 		loadButton.setText("Import Level");
 		loadButton.addActionListener(new ActionListener() {
@@ -86,6 +86,7 @@ public class LevelEditor {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				JFileChooser chooser = new JFileChooser("gameData");
+				chooser.setDialogTitle("Chose File To Load");
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Level Files Only","lvl");
 				chooser.setFileFilter(filter);
 	            int status = chooser.showOpenDialog(null);
@@ -93,6 +94,8 @@ public class LevelEditor {
 	            	String path= chooser.getSelectedFile().getAbsolutePath();
 	            	try {
 						level=LevelFileManager.loadLevel(path);
+						levelView.setLevel(level);
+						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -103,12 +106,36 @@ public class LevelEditor {
 		});
 		loadButton.setVisible(true);
 		loadButton.setBounds(860,870,120,30);
+		loadButton.setFocusable(false);//very important stops element from taking the focus away from keyboard
 		frame.add(loadButton);
-		//save and load buttons
+		//save button
 		JButton saveButton= new JButton();
 		saveButton.setText("Save Level");
+		saveButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				JFileChooser chooser = new JFileChooser("gameData");
+				chooser.setDialogTitle("Specify a file to save");   
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Level Files Only","lvl");
+				chooser.setFileFilter(filter);
+				int userSelection = chooser.showSaveDialog(frame);
+				 
+				if (userSelection == JFileChooser.APPROVE_OPTION) {
+					try {
+						LevelFileManager.saveLevel(chooser.getSelectedFile().getAbsolutePath()+".lvl",level);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+			
+		});
 		saveButton.setVisible(true);
 		saveButton.setBounds(860,910,120,30);
+		saveButton.setFocusable(false);//very important stops element from taking the focus away from keyboard
 		frame.add(saveButton);
 		
 		
