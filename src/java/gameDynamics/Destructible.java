@@ -49,7 +49,7 @@ public class Destructible extends GameObject {
 	public void die() {
 		if(this.harmable) {
 			this.dead=true;
-			this.level.objects.remove(this);
+			this.level.getObjects().remove(this);
 		}
 	}
 	public void setMaxHealth(float h) {

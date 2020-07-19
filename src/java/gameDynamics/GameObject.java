@@ -60,7 +60,7 @@ public class GameObject implements Serializable {
 		float oldX=this.x;
 		float oldY=this.y;
 		if (this.gravity) {
-			this.vy-=this.level.gravity;
+			this.vy-=this.level.getGravity();
 		}
 		this.x+=this.vx;
 		this.y+=this.vy;
@@ -84,9 +84,9 @@ public class GameObject implements Serializable {
 	
 	public void collisionCheck() {
 		//check for collisions
-		for(int j=0;j<this.level.objects.size();j++) {
-			if(this!=this.level.objects.get(j)) {//avoid self collisions
-				this.collide(this.level.objects.get(j),0);
+		for(int j=0;j<this.level.getObjects().size();j++) {
+			if(this!=this.level.getObjects().get(j)) {//avoid self collisions
+				this.collide(this.level.getObjects().get(j),0);
 			}
 		}
 	}
@@ -97,7 +97,7 @@ public class GameObject implements Serializable {
 		if(moveY) {
 			float newvy=-this.vy/fraction;
 			if (this.gravity) {
-				newvy+=level.gravity;
+				newvy+=level.getGravity();
 			}
 			this.y+=newvy;
 		}

@@ -41,8 +41,8 @@ public class Grid {
 	public void generateGrid() {
 		//tracer parameters are used to move around a selected object
 		//this enables the entire object to be converted into cells;
-		for(int i=0;i<this.level.objects.size();i++) {//iterate over all objects
-			GameObject selected=this.level.objects.get(i);
+		for(int i=0;i<this.level.getObjects().size();i++) {//iterate over all objects
+			GameObject selected=this.level.getObjects().get(i);
 			//check if the object is invisible/irrelevant
 			if(selected.type!=GameObject.objectType.WALKABLE&&selected.type!=GameObject.objectType.DEADLY&&selected.type!=GameObject.objectType.ENEMY) {
 				continue;
@@ -57,8 +57,8 @@ public class Grid {
 		
 		//remove cells only attributed by objects that moved
 		//done by iterating over objects that moved
-		for(int i=0;i<this.level.objects.size();i++) {//iterate over all objects
-			GameObject selected=this.level.objects.get(i);
+		for(int i=0;i<this.level.getObjects().size();i++) {//iterate over all objects
+			GameObject selected=this.level.getObjects().get(i);
 			if(selected.moveable) {
 				//find cells attributing
 				List<String> toDo=attributing.get(selected);
@@ -79,8 +79,8 @@ public class Grid {
 		}
 		
 		//retrace all moved objects
-		for(int i=0;i<this.level.objects.size();i++) {//iterate over all objects
-			GameObject selected=this.level.objects.get(i);
+		for(int i=0;i<this.level.getObjects().size();i++) {//iterate over all objects
+			GameObject selected=this.level.getObjects().get(i);
 			if(selected.moveable) {
 				this.traceObject(selected);
 			}

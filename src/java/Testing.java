@@ -64,8 +64,7 @@ public class Testing {
 		testingLevel.addObject(bloc3);
 		testingLevel.addObject(bloc4);
 		testingLevel.addObject(floor);
-		testingLevel.endGoal=300;
-		testingLevel.startPosition=0;
+		testingLevel.setEndGoal(300);
 		
 		
 		

@@ -20,17 +20,40 @@ import java.util.List;
 
 public class Level implements Serializable {
 	
-	public List<GameObject> objects=new ArrayList<GameObject>();//stores the gameobjects in the level
-	public transient List<Agent> agents=new ArrayList<Agent>();
-	public float gravity=(float) 0.1;
-	public float endGoal;//the x value that shows the end of the level
-	public float startPosition;
+	private List<GameObject> objects=new ArrayList<GameObject>();//stores the gameobjects in the level
+	private transient List<Agent> agents=new ArrayList<Agent>();
+	private float gravity=(float) 0.1;
+	private float endGoal;//the x value that shows the end of the level
+	private float startPosition=0;
 	int levelSGS=3;//SGS is the number of frames in the agent's state
 	int agentUpdateTime=10;//the number of physics frames that the agents are updated
 	private int counter=0;//Counts physics updates up to agentUpdateTime NOTE: this MUST start on 0
 	public float epsilon=0F;
 	
 	public boolean trainingLevel=true;//if this level is bing played or if the agents are learning to play it.
+	
+	//getters and setters
+	public void setEndGoal(float n) {
+		endGoal=n;
+	}
+	public float getEndGoal() {
+		return endGoal;
+	}
+	public void setGravity(float n) {
+		gravity=n;
+	}
+	public float getGravity() {
+		return gravity;
+	}
+	public List<GameObject> getObjects(){
+		return objects;
+	}
+	public float getStartPosition() {
+		return startPosition;
+	}
+	public void setStartPosition(float startPosition) {
+		this.startPosition = startPosition;
+	}
 	
 	public Level() {
 		
@@ -101,5 +124,6 @@ public class Level implements Serializable {
 	public void postImportSetup() {
 		agents=new ArrayList<Agent>();
 	}
+	
 	
 }

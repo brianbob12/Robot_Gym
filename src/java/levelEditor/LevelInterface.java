@@ -79,7 +79,7 @@ public class LevelInterface extends MouseAdapter{
 			float levelY=o[1];
 			if(e.getButton()==e.BUTTON1) {
 				//find gameobject
-				for(GameObject sel:this.area.getLevel().objects) {
+				for(GameObject sel:this.area.getLevel().getObjects()) {
 					if(levelX>sel.x&&levelX<sel.x+sel.width) {
 						if(levelY>sel.y&&levelY<sel.y+sel.height){
 							this.holding=sel;
@@ -123,7 +123,7 @@ public class LevelInterface extends MouseAdapter{
 				//collision checks
 				if(this.holding.collidable) {
 					boolean collided=false;
-					for(GameObject sel:this.area.getLevel().objects) {
+					for(GameObject sel:this.area.getLevel().getObjects()) {
 						if(sel!=this.holding) {
 							if(this.holding.colliding(sel)&&sel.collidable){
 								collided=true;

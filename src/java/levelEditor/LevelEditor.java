@@ -154,8 +154,8 @@ public class LevelEditor {
 	//creates a new level and returns it
 	public static Level newLevel() {
 		Level out=new Level();
-		out.endGoal=300;
-		out.startPosition=0;
+		out.setEndGoal(300);
+		out.setStartPosition(0);
 		
 		//add floor by default
 		GameObject floor=new GameObject(0,0,300,10,false,false,out);

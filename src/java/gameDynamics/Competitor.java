@@ -59,7 +59,7 @@ public abstract class Competitor extends Destructible {
 				this.jumpCount=0;
 			}
 			super.move();
-			if(this.x>level.endGoal) {
+			if(this.x>level.getEndGoal()) {
 				this.finished=true;
 			}
 		}
@@ -81,8 +81,8 @@ public abstract class Competitor extends Destructible {
 	}
 	
 	public boolean onPlatform() {
-		for(int i=0;i<this.level.objects.size();i++) {//iterate over objects
-			GameObject sub=this.level.objects.get(i);
+		for(int i=0;i<this.level.getObjects().size();i++) {//iterate over objects
+			GameObject sub=this.level.getObjects().get(i);
 			if((sub.x<this.x&&this.x<sub.x+sub.width)||(sub.x<this.x+this.width&&this.x+this.width<sub.x+sub.width)||(this.x<sub.x&&sub.x<this.x+this.width)||(this.x<sub.x+sub.width&&sub.x+sub.width<this.x+this.width)) {//check if on platform with respect to x
 				if(this.y==sub.y+sub.height) {
 					return true;

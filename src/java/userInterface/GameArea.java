@@ -79,9 +79,9 @@ public class GameArea extends JPanel {
 		}
 		
 		//for each object
-		for(int i=0;i<this.level.objects.size();i++) {
+		for(int i=0;i<this.level.getObjects().size();i++) {
 			
-			GameObject sel=this.level.objects.get(i);//selected object
+			GameObject sel=this.level.getObjects().get(i);//selected object
 			
 			//check if it is in bounds
 			if((sel.x+sel.width>xLOW&&sel.y+sel.height>yLOW)||(sel.x<xUP&&sel.y<yUP)) {
