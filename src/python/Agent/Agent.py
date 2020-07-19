@@ -12,6 +12,8 @@ except Exception as e:
     print(e)
     exit()
 
+import json
+
 #
 #Agent
 #
@@ -23,9 +25,12 @@ except Exception as e:
 #this is quite obiously a work in progress
 class Agent:
 
-    switchRate=1#how training iterations before the agent switches to the other network
+    #self.config is a dictionary holding the operational information for the agent
 
-    def __init__(self):
+    #takes a configuration path for a json file for settings
+    def __init__(self,configPath):#throws file not found error
+        with open(configPath) as file:
+            self.config=json.load(file)
         return
 
     #function to create a new agent

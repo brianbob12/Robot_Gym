@@ -9,6 +9,6 @@ for pathL in pathList:
     path+=pathL+"\\"
 path=path[:-1]
 
-agent=Agent()
+agent=Agent(path+"/gameData/agentConfig.json")
 agent.createNewAgent()
 #agent.export(path+"/playData/agents/a1")
