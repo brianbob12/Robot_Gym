@@ -71,7 +71,7 @@ class Perceptron:
             out.append(self.biases[i])
         return out
 
-    #liniar function returns iput
+    #liniar function returns input
     @function
     def liniar(self,x):
         return(x)
