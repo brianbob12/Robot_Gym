@@ -11,4 +11,4 @@ path=path[:-1]
 
 agent=Agent()
 agent.createNewAgent()
-agent.export(path+"/playData/agents/a1")
+#agent.export(path+"/playData/agents/a1")

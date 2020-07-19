@@ -204,3 +204,23 @@ class Perceptron:
                     self.biases.append(Variable([[float(k) for k in j.split(",")] for j in f.readlines()]))
             except IOError:
                 raise(missingFile(path,path+"\\b"+str(i)+".csv"))
+
+    #return deepcopy of self
+    def deepcopy(self):
+
+        import copy
+
+        out=Perceptron()
+        out.inputSize=self.inputSize#int so no copy needed
+        out.outputSize=self.outputSize#int so no copy needed
+        out.nHidden=copy.deepcopy(self.nHidden)
+        out.activation=copy.deepcopy(self.activation)
+
+        try:
+            out.weights=copy.deepcopy(self.weights)
+            out.biases=copy.deepcopy(self.biases)
+        except:
+            #weights and biases not initialized
+            pass
+
+        return out

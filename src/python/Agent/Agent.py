@@ -34,8 +34,8 @@ class Agent:
         #establish 2 neural networks for double deep Q learning
         self.network1=Net()
         self.network1.newNetwork(495,8,[256,128,64,32,16],["sigmoid","sigmoid","sigmoid","sigmoid","sigmoid","sigmoid"])
-        self.network2=Net()
-        self.network2.newNetwork(495,8,[256,128,64,32,16],["sigmoid","sigmoid","sigmoid","sigmoid","sigmoid","sigmoid"])
+        #network2 is a deepcopy of network1
+        self.network2=self.network1.deepcopy()
 
     #imports an agent from a path
     def importAgent(self,path):
