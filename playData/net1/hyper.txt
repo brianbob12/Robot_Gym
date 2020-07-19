@@ -1,4 +1,0 @@
-864
-18
-256,128
-sigmoid,sigmoid,sigmoid

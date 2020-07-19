@@ -43,10 +43,20 @@ class Agent:
         self.network1=Net()
         self.network1.importNetwork(path+"/net1")
         self.network2=Net()
-        self.network1.importNetwork(path+"/net2")
+        self.network2.importNetwork(path+"/net2")
 
-    def exportAgent(self,path):
-        print("test")
+    #exports the agent to the given path
+    def export(self,path):
+        import os
+        try:
+            os.mkdir(path)
+        except FileExistsError:
+            pass
+        except Exception as e:
+            raise(badPath(path))
+        #save networks to path
+        self.network1.export(path+"/net1")
+        self.network2.export(path+"/net2")
 
     #trains the agent networks
     #inputs a directory of a list of observation filled text files
