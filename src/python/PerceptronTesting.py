@@ -10,5 +10,5 @@ for i in myPath:
     p+="\\"
 p=p[:-1]
 myNetA=Perceptron()
-myNetA.newNetwork(864,18,[256,128],["sigmoid","sigmoid","sigmoid"])
-myNetA.export(p+"\\playData\\net1")
+myNetA.newNetwork(1,1,[1],["sigmoid","sigmoid"])
+#myNetA.export(p+"\\playData\\net1")

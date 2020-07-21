@@ -13,6 +13,7 @@ except Exception as e:
     exit()
 
 import json
+import os
 
 #
 #Agent
@@ -51,7 +52,7 @@ class Agent:
         self.network2.importNetwork(path+"/net2")
 
     #exports the agent to the given path
-    def export(self,path):
+    def export(self,path):#throws missing key if bad config file
         import os
         try:
             os.mkdir(path)
@@ -65,6 +66,42 @@ class Agent:
 
     #trains the agent networks
     #inputs a directory of a list of observation filled text files
+    #https://arxiv.org/pdf/1509.06461.pdf
     def trainAgent(self,path):
-        #iterate over all files
-        print("test")
+        data=[]#list of level data
+        #equate networks
+        self.network2=self.network1.deepcopy()#this does not have to be done every time
+        #for each peice of level data there is a 2 dimentional float list [state,action,reward,state prime, action prime]
+        for file in os.listdir(path):#iterate over all files
+            #get data from files
+            data.append([])
+            #read from file
+            with open(path+"/"+file,"r") as f:
+                 lines=f.readlines()
+
+            for line in lines:
+                data[-1].append([part.split(",") for part in line.split(";")])
+
+        #setup training training data
+        #setup arguments
+        x=[]#list of inputs
+        y=[]#list of target* values (it is a moving target that will become more accurate as training progresses)
+        yi=[]#for each training example the index of y[exapmle] that should be trained on
+
+        #iterate over all level examples
+        #NOTE: the network only choses one action
+        #this is all done as one batch but it does not have to be this way
+        for level in data:
+            for observation in level:#observation is [state,action,reward,nextState,nextAction]
+                x.append(observation[0])# add state to x
+                target=reward+self.config["gamma"]*self.network2.evaluate([observation[3]])[observation[4]]
+                yVal=[0]*self.network1.outputSize
+                yVal[observation[1]]=target#reasighn selected action to target
+                y.append([i for i in yVal])#this is because we want a new copy of yVal in place of a pointer
+                yi.append(observation[1])#this means we will only be fitting the output for this action
+                #Q(state,action,net1weights)= reward + gamma*Q(nextState,nextAction,net2weights) THIS IS WHAT THE GOAL IS
+
+        #TRAINING PROCEDURE
+        for i in range(self.config["iterationsPerGame"]):
+            #actually train the network
+            self.network1.train(x,y,yi,self.config["learningRate"],self.config["l2val"])

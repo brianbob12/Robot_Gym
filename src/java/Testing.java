@@ -16,6 +16,7 @@ import javax.swing.*;
 
 import gameDynamics.Agent;
 import gameDynamics.GameObject;
+import gameDynamics.GameObject.objectType;
 import gameDynamics.Level;
 import gameDynamics.LevelFileManager;
 import gameDynamics.Player;
@@ -53,13 +54,17 @@ public class Testing {
 		GameObject bloc2=new GameObject(150,100,10,10,true,true,testingLevel);
 		bloc2.color=Color.blue;
 		bloc2.vx=(float)-0.5;
+		bloc2.type=objectType.WALKABLE;
 		GameObject bloc3=new GameObject(132,100,10,10,true,true,testingLevel);
 		bloc3.color=Color.magenta;
 		bloc3.vy=(float)1.0;
+		bloc2.type=objectType.WALKABLE;
 		GameObject bloc4=new GameObject(200,50,10,30,true,true,testingLevel);
 		bloc4.color=Color.cyan;
+		bloc4.type=objectType.WALKABLE;
 		GameObject floor=new GameObject(100,30,200,10,false,false,testingLevel);
 		floor.color=Color.black;
+		floor.type=objectType.WALKABLE;
 		testingLevel.addObject(bloc2);
 		testingLevel.addObject(bloc3);
 		testingLevel.addObject(bloc4);
