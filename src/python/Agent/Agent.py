@@ -92,13 +92,12 @@ class Agent:
         #NOTE: the network only choses one action
         #this is all done as one batch but it does not have to be this way
         for level in data:
-            for observation in level:#observation is [state,action,reward,nextState,nextAction]
+            for observation in level:#observation is [state,action,reward,nextState,nextAction] actions are given as one hot
                 x.append(observation[0])# add state to x
-                target=reward+self.config["gamma"]*self.network2.evaluate([observation[3]])[observation[4]]
-                yVal=[0]*self.network1.outputSize
-                yVal[observation[1]]=target#reasighn selected action to target
-                y.append([i for i in yVal])#this is because we want a new copy of yVal in place of a pointer
-                yi.append(observation[1])#this means we will only be fitting the output for this action
+                target=reward+self.config["gamma"]*self.network2.evaluate([observation[3]])[observation[4].index(1)]
+                #observation[4].index(1) this converts one hot to index
+                y.append([i*reward for i in observation[1]])#the zeroes in action will multiply to zero only the one hot value will be multiplied by reward
+                yi.append(observation[1].index(1))#this means we will only be fitting the output for this action
                 #Q(state,action,net1weights)= reward + gamma*Q(nextState,nextAction,net2weights) THIS IS WHAT THE GOAL IS
 
         #TRAINING PROCEDURE
