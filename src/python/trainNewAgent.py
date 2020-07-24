@@ -15,6 +15,7 @@ except Exception as e:
 
 import os.path
 import sys
+import getopt
 #
 #trainNewAgent
 #
@@ -22,18 +23,42 @@ import sys
 #
 #The program takes arguments from the command line: directory of old agent, direcory of experiance, direcory of new agent
 
-#check for correct number of arguments
-if(len(sys.argv)>4):#NOTE sys.argv indludes trainNewAgent.py as first argument
-    print("Too few arguments")
-    exit()
+def main(args):
+    oldAgentDir=""
+    experianceDir=""
+    newAgentDir=""
 
-pathList=os.path.abspath("").split("\\")
-pathList=pathList[:-2]
-path=""
-for pathL in pathList:
-    path+=pathL+"\\"
-path=path[:-1]
+    try:
+        options, arugments= getopt.getopt(args,"hi:o:e:")
+    except getopt.GetoptError:
+        print("trainNewAgent.py i- <inputDirecory> -o <outputDirectory> -e <experianceDirectory>")
+        sys.exit(2)
+    for opt, arg in options:
+        print(opt,"-",arg)
+        if opt =="-h":
+            print("trainNewAgent.py -i <inputDirecory> -o <outputDirectory> -e <experianceDirectory>")
+            sys.exit()
+        elif opt=="-i":
+            oldAgentDir=arg
+        elif opt=="-o":
+            newAgentDir=arg
+        elif opt=="-e":
+            experianceDir=arg
 
-agent=Agent(path+"/gameData/agentConfig.json")
-agent.createNewAgent()
-#agent.export(path+"/playData/agents/a1")
+    #main code
+    pathList=os.path.abspath("").split("\\")
+    pathList=pathList[:-2]
+    path=""
+    for pathL in pathList:
+        path+=pathL+"\\"
+    path=path[:-1]
+
+    agent=Agent(path+"/gameData/agentConfig.json")
+    agent.importAgent(path+"/"+oldAgentDir)
+    agent.trainAgent(path+"/"+experianceDir)
+
+
+
+
+if __name__ == "__main__":
+   main(sys.argv[1:])

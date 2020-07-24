@@ -28,9 +28,9 @@ public class Level implements Serializable {
 	int levelSGS=3;//SGS is the number of frames in the agent's state
 	int agentUpdateTime=10;//the number of physics frames that the agents are updated
 	private int counter=0;//Counts physics updates up to agentUpdateTime NOTE: this MUST start on 0
-	public float epsilon=0F;
+	public transient float epsilon=0F;
 	
-	public boolean trainingLevel=true;//if this level is bing played or if the agents are learning to play it.
+	public transient boolean trainingLevel=true;//if this level is bing played or if the agents are learning to play it.
 	
 	//getters and setters
 	public void setEndGoal(float n) {

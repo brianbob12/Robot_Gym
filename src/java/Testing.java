@@ -50,6 +50,8 @@ public class Testing {
 		//manual setup level
 		
 		Level testingLevel=new Level();
+		testingLevel.trainingLevel=true;
+		testingLevel.epsilon=0.3f;
 		
 		GameObject bloc2=new GameObject(150,100,10,10,true,true,testingLevel);
 		bloc2.color=Color.blue;
