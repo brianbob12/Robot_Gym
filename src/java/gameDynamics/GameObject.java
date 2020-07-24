@@ -142,7 +142,7 @@ public class GameObject implements Serializable {
 				while(this.colliding(hit)) {
 					this.backstep(colFract,this.movingX(hit),this.movingY(hit));
 				}
-				
+				float buffer=0.00001f;//this is a small value to correct for float arithmetic errors
 				//find collided side
 				float right=Math.abs((this.x+this.width)-hit.x);
 				float left=Math.abs(this.x-(hit.x+hit.width));
@@ -153,19 +153,19 @@ public class GameObject implements Serializable {
 				if(right==side||left==side) {
 					this.vx=0;
 					if(left==side){
-						this.x=hit.x+hit.width;
+						this.x=hit.x+hit.width+buffer;
 					}
 					else {
-						this.x=hit.x-this.width;
+						this.x=hit.x-this.width-buffer;
 					}
 				}
 				else if(up==side||down==side){
 					this.vy=0;
 					if(down==side){
-						this.y=hit.y+hit.height;
+						this.y=hit.y+hit.height+buffer;
 					}
 					else {
-						this.y=hit.y-this.height;
+						this.y=hit.y-this.height-buffer;
 					}
 				}
 			}
@@ -175,6 +175,7 @@ public class GameObject implements Serializable {
 	//tests if this is overlapping with hit
 	public boolean colliding(GameObject hit) {
 		//check for x edges overlapping
+		
 		boolean xa=(hit.x<this.x+this.width&&hit.x>this.x)||(hit.x+hit.width<this.x+this.width&&hit.x>this.x);
 		boolean xb=(this.x<hit.x+hit.width&&this.x>hit.x)||(this.x+this.width<hit.x+hit.width&&this.x>hit.x);
 		boolean ya=(hit.y<this.y+this.height&&hit.y>this.y)||(hit.y+hit.height<this.y+this.height&&hit.y+hit.height>this.y);

@@ -25,6 +25,7 @@ public abstract class Competitor extends Destructible {
 	public float jumpForce=(float) 2.0;//velocity added through jumping
 	public int jumpDelay=5;
 	private int jumpCount=0;
+	private float jumpContactThreashold=0.01f;//the minimum distance to the floor to  jump needs to be higher than buffer in GameObject
 	
 	public Competitor(float x, float y, float width, float height,Level level, float maxHealth) {
 		super(x, y, width, height, true, true,level,maxHealth);
@@ -84,7 +85,7 @@ public abstract class Competitor extends Destructible {
 		for(int i=0;i<this.level.getObjects().size();i++) {//iterate over objects
 			GameObject sub=this.level.getObjects().get(i);
 			if((sub.x<this.x&&this.x<sub.x+sub.width)||(sub.x<this.x+this.width&&this.x+this.width<sub.x+sub.width)||(this.x<sub.x&&sub.x<this.x+this.width)||(this.x<sub.x+sub.width&&sub.x+sub.width<this.x+this.width)) {//check if on platform with respect to x
-				if(this.y==sub.y+sub.height) {
+				if(this.y-(sub.y+sub.height)<this.jumpContactThreashold&&this.y>sub.y+sub.height) {//check if within jump height threshold
 					return true;
 				}
 			}
