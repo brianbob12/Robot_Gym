@@ -46,8 +46,10 @@ class Agent:
     #imports an agent from a path
     def importAgent(self,path):
         #establish 2 neural networks for double deep Q learning
+        print("Importing Net1")
         self.network1=Net()
         self.network1.importNetwork(path+"/net1")
+        print("Importing Net2")
         self.network2=Net()
         self.network2.importNetwork(path+"/net2")
 
@@ -61,7 +63,9 @@ class Agent:
         except Exception as e:
             raise(badPath(path))
         #save networks to path
+        print("Exporting Net1")
         self.network1.export(path+"/net1")
+        print("Exporting Net2")
         self.network2.export(path+"/net2")
 
     #trains the agent networks
@@ -70,7 +74,10 @@ class Agent:
     def trainAgent(self,path):
         data=[]#list of level data
         #equate networks
-        self.network2=self.network1.deepcopy()#this does not have to be done every time
+        copying=True#this does not have to be done every time
+        if(copying):
+            print("Copying Network 1")
+            network3=self.network1.deepcopy()
         #for each peice of level data there is a 2 dimentional float list [state,action,reward,state prime, action prime]
         for file in os.listdir(path):#iterate over all files
             #get data from files
@@ -91,16 +98,30 @@ class Agent:
         #iterate over all level examples
         #NOTE: the network only choses one action
         #this is all done as one batch but it does not have to be this way
+        print("Parcing Training Data")
         for level in data:
             for observation in level:#observation is [state,action,reward,nextState,nextAction] actions are given as one hot
+                #convert everything to float
+                observation[0]=[float(i) for i in observation[0]]
+                observation[1]=[float(i) for i in observation[1]]
+                observation[2]=[float(i) for i in observation[2]]
+                observation[3]=[float(i) for i in observation[3]]
+                observation[4]=[float(i) for i in observation[4]]
+                #train
                 x.append(observation[0])# add state to x
-                target=reward+self.config["gamma"]*self.network2.evaluate([observation[3]])[observation[4].index(1)]
+                target=observation[2]+self.config["gamma"]*self.network2.evaluate([observation[3]])[0][observation[4].index(1)]
                 #observation[4].index(1) this converts one hot to index
-                y.append([i*reward for i in observation[1]])#the zeroes in action will multiply to zero only the one hot value will be multiplied by reward
+                y.append([int(i)*observation[2] for i in observation[1]])#the zeroes in action will multiply to zero only the one hot value will be multiplied by reward
                 yi.append(observation[1].index(1))#this means we will only be fitting the output for this action
                 #Q(state,action,net1weights)= reward + gamma*Q(nextState,nextAction,net2weights) THIS IS WHAT THE GOAL IS
 
         #TRAINING PROCEDURE
         for i in range(self.config["iterationsPerGame"]):
             #actually train the network
-            self.network1.train(x,y,yi,self.config["learningRate"],self.config["l2val"])
+            error=self.network1.train(x,y,yi,self.config["learningRate"],self.config["l2val"])
+            print(str(i)+"\terror:"+str(float(error)))
+
+        #copy over networks
+        if (copying):
+            print("Copying Network 3")
+            self.network2=network3.deepcopy()

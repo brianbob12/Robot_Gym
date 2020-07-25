@@ -36,7 +36,7 @@ public class Agent extends Competitor {
 	private int nGh=12;//horizontal view range(grid space)
 	private int nGv=8;//vertical view range(grid space)
 	private int sG=7;//grid cell size in level space
-	private int SGS;//number of grid observations in the observed state
+	private int SGS=1;//number of grid observations in the observed state
 	
 	//I think this is redundant... not sure
 	private List<List<Integer>> frames;//stores the grid outputs before evaluation max length of SGS
@@ -169,6 +169,7 @@ public class Agent extends Competitor {
 				}
 			}
 		}
+		System.out.println(output);
 		return output;
 	}
 	
@@ -259,8 +260,7 @@ public class Agent extends Competitor {
 		macroAction-=macroAction-this.selectedActionB;
 		macroAction=macroAction/2;
 		this.selectedActionC=macroAction;
-		//clear frames
-		this.clearFrames();
+		
 		
 		if (this.training) {
 			//log history
@@ -273,6 +273,12 @@ public class Agent extends Competitor {
 					stateForExport.add(j);
 				}
 			}
+			if(stateForExport.size()==0) {
+				//something has gone horribly wrong
+				System.out.println("empy flat state");
+				return;
+			}
+			//System.out.println(stateForExport);
 			if(this.lastState!=null) {
 				float reward=this.getTotalScore()-this.lastScore;
 				this.saveData(stateForExport,oldActionA,oldActionB,oldActionC,reward,this.lastState,this.selectedActionA,this.selectedActionB,this.selectedActionC);
@@ -280,6 +286,9 @@ public class Agent extends Competitor {
 			this.lastState=stateForExport;
 			this.lastScore=this.getTotalScore();
 		}
+		
+		//clear frames
+		this.clearFrames();
 	}
 	
 	//exports the index of the highest value in input
@@ -310,11 +319,11 @@ public class Agent extends Competitor {
 		AgentDataPoint tad=new AgentDataPoint(state,action,reward,statePrime,nextAction);
 		//decide if relevant
 		//THIS IS VERY INFLUENTIAL on the training process
-		for(AgentDataPoint i: this.data) {
-			if(tad.similar(i)) {
-				return;
-			}
-		}
+		//for(AgentDataPoint i: this.data) {
+		//	if(tad.similar(i)) {
+		//		return;
+		//	}
+		//}
 		this.data.add(tad);
 		
 	}

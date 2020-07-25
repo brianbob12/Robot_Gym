@@ -1,6 +1,6 @@
 {
-  "iterationsPerGame":1,
-  "l2val":5,
-  "learningRate":0.0005,
+  "iterationsPerGame":12,
+  "l2val":0.01,
+  "learningRate":0.05,
   "gamma":0.8
 }

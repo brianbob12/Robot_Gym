@@ -80,6 +80,7 @@ class Perceptron:
     #forward propagation
     @function
     def evaluate(self,x):
+        #print(x)#for debug
         #note: x has shape(batchsizse,inputSize)
         #ensure that layers are floats
         layerVals=[x]# a list of the neruon value for each x
@@ -93,10 +94,13 @@ class Perceptron:
     #returns squared error
     #only trianes for one Yindex(Yi) per training example
     def train(self,X,Y,Yi,learningRate,L2val):
+
+        #very sorry L2 is currtently out of order I will fix this later
+
         #apply L2 regularization to avoid overfitting
         #this is really really important
-        regularizer=l2(L2val)#just ot be clear this is tf.keras.regularizers.l2
-        regularizer(self.weights)
+        #regularizer=l2(L2val)#just to be clear this is tf.keras.regularizers.l2
+        #regularizer(self.weights)
 
         #compute gradients of weights and biases
         with GradientTape() as g:
@@ -108,7 +112,7 @@ class Perceptron:
             #calculate error using sqared error
             error=0
             for i in range(len(Y)):
-                error+=(guess[i][Yi]-Y[i][Yi])**2
+                error+=(guess[i][Yi[i]]-Y[i][Yi[i]])**2
             error=error/len(Y)
 
         optimizer=Adam(learningRate)
@@ -201,7 +205,7 @@ class Perceptron:
 
             try:
                 with open(path+"\\b"+str(i)+".csv","r") as f:
-                    self.biases.append(Variable([[float(k) for k in j.split(",")] for j in f.readlines()]))
+                    self.biases.append(Variable([[float(k) for k in j.split(",")] for j in f.readlines()][0]))
             except IOError:
                 raise(missingFile(path,path+"\\b"+str(i)+".csv"))
 

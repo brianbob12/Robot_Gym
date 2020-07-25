@@ -34,7 +34,6 @@ def main(args):
         print("trainNewAgent.py i- <inputDirecory> -o <outputDirectory> -e <experianceDirectory>")
         sys.exit(2)
     for opt, arg in options:
-        print(opt,"-",arg)
         if opt =="-h":
             print("trainNewAgent.py -i <inputDirecory> -o <outputDirectory> -e <experianceDirectory>")
             sys.exit()
@@ -56,7 +55,8 @@ def main(args):
     agent=Agent(path+"/gameData/agentConfig.json")
     agent.importAgent(path+"/"+oldAgentDir)
     agent.trainAgent(path+"/"+experianceDir)
-
+    #export agent
+    agent.export(path+"/"+newAgentDir)
 
 
 
