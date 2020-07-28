@@ -47,7 +47,7 @@ public class TestingTraining {
 		
 		Level testingLevel=new Level();
 		testingLevel.trainingLevel=true;
-		testingLevel.epsilon=0.3f;//this is very important this changes the frequency of random actions in the agents
+		testingLevel.epsilon=0f;//this is very important this changes the frequency of random actions in the agents
 		
 		GameObject floor=new GameObject(100,30,200,10,false,false,testingLevel);
 		floor.color=Color.black;
@@ -64,7 +64,7 @@ public class TestingTraining {
 			Agent a = new Agent(120,45,testingLevel);
 			a.name="A"+numberOfAgents;
 			try {
-				a.importNetwork("playData/agents/a1/net1");
+				a.importNetwork("playData/agents/a0/net1");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

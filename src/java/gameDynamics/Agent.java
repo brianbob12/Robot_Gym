@@ -144,6 +144,7 @@ public class Agent extends Competitor {
 	}
 	//returns grid output for visible squares a flattened array
 	private List<Integer> observe() {
+		//System.out.println(this.moved);
 		if(!this.moved) {
 			//grid update is applicable
 			this.myGrid.updateGrid();
@@ -159,6 +160,8 @@ public class Agent extends Competitor {
 		float startPointY=this.y-(this.nGv/2)*this.sG;
 		float endPointX=this.x+this.width+(this.nGh/2)*this.sG;
 		float endPointY=this.y+(this.nGv/2)*this.sG;
+		//debug
+		//System.out.println("("+this.x+","+this.y+") "+startPointX+","+startPointY+";"+endPointX+","+endPointY);
 		//for all of the relevant cells
 		for(float tracerX=startPointX;tracerX<endPointX;tracerX+=this.sG) {
 			for(float tracerY=startPointY;tracerY<endPointY;tracerY+=this.sG) {
@@ -169,7 +172,7 @@ public class Agent extends Competitor {
 				}
 			}
 		}
-		System.out.println(output);
+		//System.out.println(output);
 		return output;
 	}
 	
@@ -250,6 +253,8 @@ public class Agent extends Competitor {
 		
 		//evaluate network
 		List<Double> rawOutput=this.evaluateNetwork(networkInput);
+		//debug
+		System.out.println(rawOutput);
 		
 		//take argmax of neural network
 		int macroAction=this.argMax(rawOutput);
@@ -319,11 +324,11 @@ public class Agent extends Competitor {
 		AgentDataPoint tad=new AgentDataPoint(state,action,reward,statePrime,nextAction);
 		//decide if relevant
 		//THIS IS VERY INFLUENTIAL on the training process
-		//for(AgentDataPoint i: this.data) {
-		//	if(tad.similar(i)) {
-		//		return;
-		//	}
-		//}
+		for(AgentDataPoint i: this.data) {
+			if(tad.similar(i)) {
+				return;
+			}
+		}
 		this.data.add(tad);
 		
 	}

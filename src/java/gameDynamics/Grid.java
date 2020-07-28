@@ -43,10 +43,7 @@ public class Grid {
 		//this enables the entire object to be converted into cells;
 		for(int i=0;i<this.level.getObjects().size();i++) {//iterate over all objects
 			GameObject selected=this.level.getObjects().get(i);
-			//check if the object is invisible/irrelevant
-			if(selected.type!=GameObject.objectType.WALKABLE&&selected.type!=GameObject.objectType.DEADLY&&selected.type!=GameObject.objectType.ENEMY) {
-				continue;
-			}
+			
 			this.traceObject(selected);
 			
 		}
@@ -54,12 +51,12 @@ public class Grid {
 	
 	//updates the grid for a given frame
 	public void updateGrid() {
-		
+		//System.out.println("\ngrid update");
 		//remove cells only attributed by objects that moved
 		//done by iterating over objects that moved
 		for(int i=0;i<this.level.getObjects().size();i++) {//iterate over all objects
 			GameObject selected=this.level.getObjects().get(i);
-			if(selected.moveable) {
+			if(selected.moved) {
 				//find cells attributing
 				List<String> toDo=attributing.get(selected);
 				if(toDo!=null) {
@@ -73,7 +70,7 @@ public class Grid {
 						//note: the list in the attributing map will get overwritten later
 					}
 				}
-				//retrace objet
+				//retrace object
 				this.traceObject(selected);
 			}
 		}
@@ -81,7 +78,19 @@ public class Grid {
 		//retrace all moved objects
 		for(int i=0;i<this.level.getObjects().size();i++) {//iterate over all objects
 			GameObject selected=this.level.getObjects().get(i);
-			if(selected.moveable) {
+			if(selected.moved) {
+				//debug
+				//System.out.print("tracing object-");
+				//if(selected.type==GameObject.objectType.ENEMY) {
+				//	System.out.println("ENEMY");
+				//}
+				//else if(selected.type==GameObject.objectType.ALLY) {
+				//	System.out.println("ALLY");
+				//}
+				//else if(selected.type==GameObject.objectType.WALKABLE) {
+				//	System.out.println("WALKABLE");
+				//}
+				
 				this.traceObject(selected);
 			}
 		}
@@ -89,7 +98,17 @@ public class Grid {
 	
 	//traces an object encoding it into cells.
 	private void traceObject(GameObject selected) {
-		
+		//debug
+		//System.out.print("tracing object-");
+		//if(selected.type==GameObject.objectType.ENEMY) {
+		//	System.out.println("ENEMY");
+		//}
+		//else if(selected.type==GameObject.objectType.ALLY) {
+		//	System.out.println("ALLY");
+		//}
+		//else if(selected.type==GameObject.objectType.WALKABLE) {
+		//	System.out.println("WALKABLE");
+		//}
 		//find closest gridCell
 		/**
 		 * Steps to find closest grid cell:
@@ -105,7 +124,6 @@ public class Grid {
 		float startY=((int)(selected.y/this.sG))*this.sG+this.offsetY;
 		if(startX>selected.x) {startX-=sG;}
 		if(startY>selected.y) {startY-=sG;}
-		
 		List<String> cellList=new ArrayList<String>();//the list of cell keys that selected is attributing
 		
 		//tracer starts in the bottom left and moves to the top right

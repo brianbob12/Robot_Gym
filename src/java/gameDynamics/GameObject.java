@@ -71,15 +71,17 @@ public class GameObject implements Serializable {
 		
 		this.collisionCheck();
 		
-		//check for moved
-		if(oldX==this.x&&oldY==this.y) {
-			this.moved=true;
-		}
-		else {
-			this.moved=false;
-		}
 		if(this.x<0) {this.x=0;}
 		if(this.y<0) {this.y=0;}
+		
+		//check for moved
+		if(oldX==this.x&&oldY==this.y) {
+			this.moved=false;
+		}
+		else {
+			this.moved=true;
+		}
+		
 	}
 	
 	public void collisionCheck() {

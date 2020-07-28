@@ -36,6 +36,7 @@ public abstract class Competitor extends Destructible {
 	}
 	
 	//updates the movement score & check for finished
+	@Override
 	public void move() {
 		float oldX=this.x;
 		float oldY=this.y;
@@ -64,6 +65,7 @@ public abstract class Competitor extends Destructible {
 				this.finished=true;
 			}
 		}
+		
 		this.moveScore=this.x-this.xOffset;
 	}
 	//returns the total score
