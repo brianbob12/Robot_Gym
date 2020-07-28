@@ -63,7 +63,7 @@ public class GameArea extends JPanel {
 		float xLOW=viewBounds.get(0);
 		float yLOW=viewBounds.get(1);
 		float xUP=xLOW+this.viewX;
-		float yUP=xLOW+this.viewY;
+		float yUP=yLOW+this.viewY;
 		viewBounds=null;//needless space
 		
 		float convRatioX=this.getWidth()/this.viewX;

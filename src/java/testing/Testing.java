@@ -57,7 +57,12 @@ public class Testing {
 		testingLevel.epsilon=0.0f;
 		
 		GameObject bloc2=new GameObject(150,100,10,10,true,true,testingLevel);
-		bloc2.color=Color.blue;
+		try {
+			bloc2.setDisplayImage(ImageIO.read(new File("assets/images/BackgroundBlue.png")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		bloc2.vx=(float)-0.5;
 		bloc2.type=objectType.WALKABLE;
 		GameObject bloc3=new GameObject(132,100,10,10,true,true,testingLevel);
