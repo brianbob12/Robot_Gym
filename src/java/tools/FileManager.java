@@ -9,8 +9,11 @@ import java.util.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
 /**
  * FileManager
  * A collection of file management functions
@@ -73,5 +76,26 @@ public abstract class FileManager {
 		bufferedWriter.write(lines.get(lines.size()-1));
 		//close
 		bufferedWriter.close();
+	}
+	//reads a file as a list of floats(4 bytes)
+	public static List<Float> readAsFloatList(String path) throws IOException{
+		File file= new File(path);
+		FileInputStream fis=new FileInputStream(file);
+		int myByteToBe=0;
+		List<Byte> bytes= new ArrayList<Byte>();
+        while((myByteToBe=fis.read())!=-1){
+        	bytes.add((byte)myByteToBe);
+        } 
+		
+        //byte to float
+        List<Float> out = new ArrayList<Float>();
+        
+        for(int i=3;i<bytes.size();i+=4) {
+        	byte [] data = new byte[] {bytes.get(i-3),bytes.get(i-2),bytes.get(i-1),bytes.get(i)};
+        	ByteBuffer b = ByteBuffer.wrap(data);
+        	out.add(b.getFloat());
+        }
+        
+        return out;
 	}
 }

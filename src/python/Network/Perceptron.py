@@ -123,7 +123,7 @@ class Perceptron:
         return error
 
     #export currently loaded network to file
-    def export(self,path):
+    def export(self,path):#throws IOerror
         import os
         try:
             os.mkdir(path)
@@ -166,7 +166,7 @@ class Perceptron:
                 f.write(bytearray(struct.pack(str(len(out))+"f",*out)))
 
     #import a network of the format given above
-    def importNetwork(self,path):
+    def importNetwork(self,path):#throws IOerror and byte error
         #check if the path is real
         import os
         if(not os.path.exists(path)):
@@ -207,14 +207,14 @@ class Perceptron:
                     for k in range(self.nHidden[0]):
                         tad2.append(inp[j*self.nHidden[0]+k])
                         tad.append(tad2)
-                        self.weights.append(tad)
+                self.weights.append(Variable(tad))
         except IOError:
             raise(missingFile(path,path+"\\w0.weights"))
         try:
             with open(path+"\\b0.biases","rb") as f:
                 raw=f.read()#type of bytes
                 inp=struct.unpack(str(self.nHidden[0])+"f",raw)#list of int
-                self.biases.append(inp)
+                self.biases.append(Variable(inp))
 
         except IOError:
             raise(missingFile(path,path+"\\b0.bases"))
@@ -231,7 +231,7 @@ class Perceptron:
                         for k in range(self.nHidden[i]):
                             tad2.append(inp[j*self.nHidden[i]+k])
                         tad.append(tad2)
-                    self.weights.append(tad)
+                    self.weights.append(Variable(tad))
 
             except IOError:
                 raise(missingFile(path,path+"\\w"+str(i)+".weights"))
@@ -240,7 +240,7 @@ class Perceptron:
                 with open(path+"\\b"+str(i)+".biases","rb") as f:
                     raw=f.read()#type of bytes
                     inp=struct.unpack(str(self.nHidden[i])+"f",raw)#list of int
-                    self.biases.append(inp)
+                    self.biases.append(Variable(inp))
 
             except IOError:
                 raise(missingFile(path,path+"\\b"+str(i)+".bases"))
@@ -255,7 +255,7 @@ class Perceptron:
                     for k in range(self.outputSize):
                         tad2.append(inp[j*self.outputSize+k])
                         tad.append(tad2)
-                        self.weights.append(tad)
+                self.weights.append(Variable(tad))
 
         except IOError:
             raise(missingFile(path,path+"\\w"+str(i)+".weights"))
@@ -263,7 +263,7 @@ class Perceptron:
             with open(path+"\\b"+str(i)+".biases","rb") as f:
                 raw=f.read()#type of bytes
                 inp=struct.unpack(str(self.nHidden[i])+"f",raw)#list of int
-                self.biases.append(inp)
+                self.biases.append(Variable(inp))
 
         except IOError:
             raise(missingFile(path,path+"\\b"+str(i)+".bases"))

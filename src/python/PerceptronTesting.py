@@ -3,7 +3,7 @@
 import os
 from Network.Perceptron import Perceptron
 myNetA=Perceptron()
-myNetA.importNetwork("testNet")
+myNetA.importNetwork("net1")
 #myNetA.newNetwork(864,18,[256,128,64,32],["sigmoid","sigmoid","sigmoid","sigmoid","sigmoid"])
 #print("startexport")
 #myNetA.export("testNet")
