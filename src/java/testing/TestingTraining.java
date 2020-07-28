@@ -8,10 +8,12 @@ package testing;
  */
 
 import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import gameDynamics.Agent;
@@ -78,7 +80,12 @@ public class TestingTraining {
 		testingLevel.setUpAgents();
 		
 		GameObject player=new Player(110,45,testingLevel,myKeyboard);
-		player.color=Color.red;
+		try {
+			player.setDisplayImage(ImageIO.read(new File("assets/images/PlayerPlaceholder.png")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		testingLevel.addObject(player);//player should always be added after agents
 		
 		GameArea testingLevelView=new GameArea(testingLevel);

@@ -182,7 +182,7 @@ public class Agent extends Competitor {
 	
 	//the sigmoid function for evaluating neural networks
 	//THIS MAY NOW BE REDUNDANR
-	private static double sigmoid(double x) {
+	private double sigmoid(double x) {
 		return (1/(1+Math.pow(Math.E,-1*x)));
 	}
 	
@@ -259,7 +259,7 @@ public class Agent extends Competitor {
 		//evaluate network
 		List<Double> rawOutput=this.evaluateNetwork(networkInput);
 		//debug
-		System.out.println(rawOutput);
+		//System.out.println(rawOutput);
 		
 		//take argmax of neural network
 		int macroAction=this.argMax(rawOutput);

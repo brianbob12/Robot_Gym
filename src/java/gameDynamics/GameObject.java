@@ -30,11 +30,15 @@ public class GameObject implements Serializable {
 	public boolean gravity;//is it affected by gravity
 	public boolean collidable=true;
 	public boolean moveable;//Weather this object is able to be moved
-	public Color color=null;//null if object is immovable
+	
 	public Level level;
 	public objectType type=objectType.WALKABLE;
 	public boolean moved;//stores whether this object moved this frame
 	public boolean highlight=false;//Controls a highlight
+	
+	//visuals
+	public Color color=null;//null if object is immovable
+	protected Image displayImage=null;//null if no image acessed in children
 	
 	public enum objectType{
 		WALKABLE,
@@ -42,6 +46,12 @@ public class GameObject implements Serializable {
 		ALLY,
 		DEADLY
 	}
+	
+	//getters and setters
+	public void setDisplayImage(Image image) {
+		displayImage=image;
+	}
+	
 	
 	public GameObject(float x,float y,float width,float height,boolean gravity,boolean moveable,Level level) {
 		this.x=x;
@@ -227,7 +237,7 @@ public class GameObject implements Serializable {
 	}
 	
 	//draw GameObject to graphics objects
-	//overriden in children
+	//Overridden in children
 	public void draw(Graphics g,GameArea area,float xLOW,float yLOW,float xUP,float yUP,float convRatioX,float convRatioY) {
 		//HIGHLIGHT
 		if(highlight) {
@@ -235,12 +245,17 @@ public class GameObject implements Serializable {
 			g.fillRect((int)((x-xLOW)*convRatioX)-1,(int) (area.getHeight()-(y-yLOW)*convRatioY)+1,(int)(width*convRatioX)+2,-(int)(height*convRatioY)-2);
 		}
 		
-		if(color!=null) {
-			g.setColor(color);
+		if(displayImage!=null) {
+			g.drawImage(displayImage, (int)((x-xLOW)*convRatioX), (int) (area.getHeight()-(y-yLOW)*convRatioY)-(int)(height*convRatioY), (int)(width*convRatioX), (int)(height*convRatioY), null);
 		}
-		
-		//if the color is null it will be drawn with the last previously drawn color
-		//although this is not likely to occur.
-		g.fillRect((int)((x-xLOW)*convRatioX),(int) (area.getHeight()-(y-yLOW)*convRatioY),(int)(width*convRatioX),-(int)(height*convRatioY));
+		else {
+			if(color!=null) {
+				g.setColor(color);
+			}
+			
+			//if the color is null it will be drawn with the last previously drawn color
+			//although this is not likely to occur.
+			g.fillRect((int)((x-xLOW)*convRatioX),(int) (area.getHeight()-(y-yLOW)*convRatioY),(int)(width*convRatioX),-(int)(height*convRatioY));
+		}
 	}
 }

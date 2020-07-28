@@ -7,12 +7,14 @@ package testing;
  */
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import gameDynamics.Agent;
@@ -87,24 +89,29 @@ public class Testing {
 		*/
 		
 		//adding agents
-		Agent agent=new Agent(120,45,testingLevel);
-		agent.name="A1";
-		try {
-			agent.importNetwork("playData/net1");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		agent.color=Color.green;
+		//Agent agent=new Agent(120,45,testingLevel);
+		//agent.name="A1";
+		//try {
+		//	agent.importNetwork("playData/net1");
+		//} catch (IOException e) {
+		//	// TODO Auto-generated catch block
+		//	e.printStackTrace();
+		//}
+		//agent.color=Color.green;
 		
 		
-		testingLevel.addAgent(agent);
+		//testingLevel.addAgent(agent);
 		
 		
 		testingLevel.setUpAgents();
 		
 		GameObject player=new Player(110,45,testingLevel,myKeyboard);
-		player.color=Color.red;
+		try {
+			player.setDisplayImage(ImageIO.read(new File("assets/images/PlayerPlaceholder.png")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		testingLevel.addObject(player);//player should always be added after agents
 		
 		GameArea testingLevelView=new GameArea(testingLevel);
