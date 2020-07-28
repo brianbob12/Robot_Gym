@@ -23,7 +23,7 @@ public abstract class FileManager {
 	//reads a file and returns a list of strings by line of the file
 	//propagates exceptions
 	public static List<String> readByLine(String path) throws IOException{
-		List<String> out=new ArrayList<String>();
+		List<String> out=new LinkedList<String>();
 		File f= new File(path);
 		Scanner scan=new Scanner(f);
 		while(scan.hasNextLine()) {
@@ -38,9 +38,9 @@ public abstract class FileManager {
 	public static List<List<Double>> readRectangleCSV(String path) throws IOException{
 		List<String> rawOutput=readByLine(path);
 		//list of each line casted to floats separated by commas 
-		List<List<Double>> sep=new ArrayList<List<Double>>();
+		List<List<Double>> sep=new LinkedList<List<Double>>();
 		for(int i=0;i<rawOutput.size();i++) {
-			List<Double> tad=new ArrayList<Double>();
+			List<Double> tad=new LinkedList<Double>();
 			String[] toCast=rawOutput.get(i).split(",");
 			for(String j:toCast) {
 				tad.add(Double.parseDouble(j));
@@ -48,10 +48,10 @@ public abstract class FileManager {
 			sep.add(tad);
 		}
 		//now sep needs to be reformatted as a list of columns in place of floats
-		List<List<Double>> out=new ArrayList<List<Double>>();
+		List<List<Double>> out=new LinkedList<List<Double>>();
 		//for columns
 		for(int i=0;i<sep.get(0).size();i++) {
-			out.add(new ArrayList<Double>());
+			out.add(new LinkedList<Double>());
 			//for rows
 			for(int j=0;j<sep.size();j++) {
 				out.get(i).add(sep.get(j).get(i));
@@ -91,9 +91,17 @@ public abstract class FileManager {
         List<Float> out = new ArrayList<Float>();
         
         for(int i=3;i<bytes.size();i+=4) {
-        	byte [] data = new byte[] {bytes.get(i-3),bytes.get(i-2),bytes.get(i-1),bytes.get(i)};
+        	byte [] data = new byte[] {bytes.get(i),bytes.get(i-1),bytes.get(i-2),bytes.get(i-3)};
         	ByteBuffer b = ByteBuffer.wrap(data);
-        	out.add(b.getFloat());
+        	float f=b.getFloat();
+        	if(Float.isNaN(f)){
+        		System.out.println("NaN float:"+b);
+        		out.add(0f);
+        	}
+        	else {
+        		out.add(f);
+        	}
+        	//out.add(b.getFloat());
         }
         
         return out;

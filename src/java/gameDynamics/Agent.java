@@ -80,23 +80,77 @@ public class Agent extends Competitor {
 		this.weights=new ArrayList<Matrix>();
 		this.biases=new ArrayList<Matrix>();
 		//first hidden layer
+		List<List<Double>>tad=new ArrayList<List<Double>>();//working variable
+		List<Float> raw=FileManager.readAsFloatList(path+"/w0.weights");
+		
 		this.weights.add(new Matrix(this.nHidden.get(0),this.stateSpace));//note: stateSpace is equivalent to input layer size
-		this.weights.get(0).setData(FileManager.readRectangleCSV(path+"/w0.csv"));
+		for(int j=0;j<this.nHidden.get(0);j++) {//reshape list
+			List<Double> tad2=new ArrayList<Double>();
+			for(int k=0;k<this.stateSpace;k++) {
+				tad2.add((double)raw.get(j*this.stateSpace+k));
+			}
+			tad.add(tad2);
+		}
+		this.weights.get(0).setData(tad);
+		
+		tad=new ArrayList<List<Double>>();//working variable
+		raw=FileManager.readAsFloatList(path+"/b0.biases");
 		this.biases.add(new Matrix(this.nHidden.get(0),1));
-		this.biases.get(0).setData(FileManager.readRectangleCSV(path+"/b0.csv"));
+		for(int j=0;j<this.nHidden.get(0);j++) {
+			List<Double> tad2=new ArrayList<Double>();
+			tad2.add((double)raw.get(j));
+			tad.add(tad2);
+		}
+		this.biases.get(0).setData(tad);
 		//for each layer excluding the first hidden layer and the output layer
 		for(int i=1;i<this.nHidden.size();i++) {
 			//import weights
-			this.weights.add(new Matrix(this.nHidden.get(i),this.nHidden.get(i-1)));
-			this.weights.get(i).setData(FileManager.readRectangleCSV(path+"/w"+Integer.toString(i)+".csv"));
+			tad=new ArrayList<List<Double>>();//working variable
+			raw=FileManager.readAsFloatList(path+"/w"+Integer.toString(i)+".weights");
+			this.weights.add(new Matrix(this.nHidden.get(i),this.nHidden.get(i-1)));//note: stateSpace is equivalent to input layer size
+			for(int j=0;j<this.nHidden.get(i);j++) {//reshape the list
+				List<Double> tad2=new ArrayList<Double>();
+				for(int k=0;k<this.nHidden.get(i-1);k++) {
+					tad2.add((double)raw.get(j*this.nHidden.get(i)+k));
+				}
+				tad.add(tad2);
+			}
+			this.weights.get(i).setData(tad);//add matrix to weights
+			
+			//import biases
+			tad=new ArrayList<List<Double>>();//working variable
+			raw=FileManager.readAsFloatList(path+"/b"+Integer.toString(i)+".biases");
 			this.biases.add(new Matrix(this.nHidden.get(i),1));
-			this.biases.get(i).setData(FileManager.readRectangleCSV(path+"/b"+Integer.toString(i)+".csv"));
+			for(int j=0;j<this.nHidden.get(i);j++) {
+				List<Double> tad2=new ArrayList<Double>();
+				tad2.add((double)raw.get(j));
+				tad.add(tad2);
+			}
+			this.biases.get(i).setData(tad);
 		}
 		//output layer
-		this.weights.add(new Matrix(this.actionSpace,this.nHidden.get(this.nHidden.size()-1)));//note: stateSpace is equivalent to input layer size
-		this.weights.get(this.nHidden.size()).setData(FileManager.readRectangleCSV(path+"/w"+Integer.toString(this.nHidden.size())+".csv"));
+		//weights
+		tad=new ArrayList<List<Double>>();//working variable
+		raw=FileManager.readAsFloatList(path+"/w"+Integer.toString(this.nHidden.size())+".weights");
+		this.weights.add(new Matrix(this.actionSpace,this.nHidden.get(this.nHidden.size()-1)));//note: actionSpace is equivalent to number of neurons in the output layer
+		for(int j=0;j<this.actionSpace;j++) {//reshape list
+			List<Double> tad2=new ArrayList<Double>();
+			for(int k=0;k<this.nHidden.get(this.nHidden.size()-1);k++) {
+				tad2.add((double)raw.get(j*this.actionSpace+k));
+			}
+			tad.add(tad2);
+		}
+		this.weights.get(this.nHidden.size()).setData(tad);
+		//biases
+		tad=new ArrayList<List<Double>>();//working variable
+		raw=FileManager.readAsFloatList(path+"/b"+Integer.toString(this.nHidden.size())+".biases");
 		this.biases.add(new Matrix(this.actionSpace,1));
-		this.biases.get(this.nHidden.size()).setData(FileManager.readRectangleCSV(path+"/b"+Integer.toString(this.nHidden.size())+".csv"));
+		for(int j=0;j<this.actionSpace;j++) {
+			List<Double> tad2=new ArrayList<Double>();
+			tad2.add((double)raw.get(j));
+			tad.add(tad2);
+		}
+		this.biases.get(this.nHidden.size()).setData(tad);
 	}
 	
 	//Evaluates the neural network for a single input
@@ -114,7 +168,6 @@ public class Agent extends Competitor {
 			inpData.get(inpData.size()-1).add(i);
 		}
 		layerVals.get(0).setData(inpData);
-
 		//for each hidden layer and the output layer
 		for(int i=1;i<this.nHidden.size()+2;i++) {
 			layerVals.add(layerVals.get(i-1).multiply(this.weights.get(i-1)).add(this.biases.get(i-1)));
@@ -132,9 +185,9 @@ public class Agent extends Competitor {
 						nums.get(j).set(k, Math.tanh(nums.get(j).get(k)));
 					}
 				}
-			};
+			}
+			
 		}
-		
 		//return last layer
 		return layerVals.get(this.nHidden.size()+1).getRow(0);
 	}
@@ -245,12 +298,12 @@ public class Agent extends Competitor {
 		}
 		//flatten frames
 		List<Double> networkInput=new ArrayList<Double>();
+		
 		for(List<Integer> i:this.frames) {
 			for(int j:i) {
 				networkInput.add((double) j);
 			}
 		}
-		
 		//for potential data collection
 		int oldActionA=this.selectedActionA;
 		int oldActionB=this.selectedActionB;
@@ -259,7 +312,7 @@ public class Agent extends Competitor {
 		//evaluate network
 		List<Double> rawOutput=this.evaluateNetwork(networkInput);
 		//debug
-		//System.out.println(rawOutput);
+		System.out.println(rawOutput);
 		
 		//take argmax of neural network
 		int macroAction=this.argMax(rawOutput);

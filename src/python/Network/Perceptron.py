@@ -206,15 +206,15 @@ class Perceptron:
                     tad2=[]
                     for k in range(self.nHidden[0]):
                         tad2.append(inp[j*self.nHidden[0]+k])
-                        tad.append(tad2)
+                    tad.append(tad2)
                 self.weights.append(Variable(tad))
         except IOError:
             raise(missingFile(path,path+"\\w0.weights"))
         try:
             with open(path+"\\b0.biases","rb") as f:
                 raw=f.read()#type of bytes
-                inp=struct.unpack(str(self.nHidden[0])+"f",raw)#list of int
-                self.biases.append(Variable(inp))
+                inp=struct.unpack(str(self.nHidden[0])+"f",raw)#list of floats
+                self.biases.append(Variable([i for i in inp]))
 
         except IOError:
             raise(missingFile(path,path+"\\b0.bases"))
@@ -240,7 +240,7 @@ class Perceptron:
                 with open(path+"\\b"+str(i)+".biases","rb") as f:
                     raw=f.read()#type of bytes
                     inp=struct.unpack(str(self.nHidden[i])+"f",raw)#list of int
-                    self.biases.append(Variable(inp))
+                    self.biases.append(Variable([i for i in inp]))
 
             except IOError:
                 raise(missingFile(path,path+"\\b"+str(i)+".bases"))
@@ -254,19 +254,19 @@ class Perceptron:
                     tad2=[]
                     for k in range(self.outputSize):
                         tad2.append(inp[j*self.outputSize+k])
-                        tad.append(tad2)
+                    tad.append(tad2)
                 self.weights.append(Variable(tad))
 
         except IOError:
-            raise(missingFile(path,path+"\\w"+str(i)+".weights"))
+            raise(missingFile(path,path+"\\w"+str(len(self.nHidden))+".weights"))
         try:
-            with open(path+"\\b"+str(i)+".biases","rb") as f:
+            with open(path+"\\b"+str(len(self.nHidden))+".biases","rb") as f:
                 raw=f.read()#type of bytes
-                inp=struct.unpack(str(self.nHidden[i])+"f",raw)#list of int
-                self.biases.append(Variable(inp))
+                inp=struct.unpack(str(self.outputSize)+"f",raw)#list of int
+                self.biases.append(Variable([i for i in inp]))
 
         except IOError:
-            raise(missingFile(path,path+"\\b"+str(i)+".bases"))
+            raise(missingFile(path,path+"\\b"+str(len(self.nHidden))+".bases"))
 
     #return deepcopy of self
     def deepcopy(self):

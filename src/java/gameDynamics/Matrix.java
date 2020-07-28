@@ -74,6 +74,7 @@ public class Matrix {
 				newData.get(i).add(this.dotProduct(rows.get(j), column));//avoiding repetition here
 			}
 		}
+		
 		product.setData(newData);
 		return product;
 	}
