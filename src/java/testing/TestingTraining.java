@@ -116,17 +116,17 @@ public class TestingTraining {
 		}
 		
 		//export data
-		int i=0;
-		for(Agent agent: agents) {
-			try {
-				agent.exportData("playData/data/g"+i+".txt");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			i+=1;
-		}
-		System.out.println("done");
+		//int i=0;
+		//for(Agent agent: agents) {
+		//	try {
+		//		agent.exportData("playData/data/g"+i+".txt");
+		//	} catch (IOException e) {
+		//		// TODO Auto-generated catch block
+		//		e.printStackTrace();
+		//	}
+		//	i+=1;
+		//}
+		//System.out.println("done");
 	}
 
 }

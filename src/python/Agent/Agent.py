@@ -39,7 +39,7 @@ class Agent:
 
         #establish 2 neural networks for double deep Q learning
         self.network1=Net()
-        self.network1.newNetwork(864,18,[256,128,64,32],["sigmoid","sigmoid","sigmoid","sigmoid","sigmoid"])
+        self.network1.newNetwork(864,18,[256,128,64,32],["tanh","tanh","tanh","linear","linear"])
         #network2 is a deepcopy of network1
         self.network2=self.network1.deepcopy()
 

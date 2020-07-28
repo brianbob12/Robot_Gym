@@ -12,6 +12,7 @@ from tensorflow.random import truncated_normal
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.optimizers import Adam
 from tensorflow.nn import relu,sigmoid
+from tensorflow.math import tanh
 import numpy#this is actually a dependancy of tensorflow
 from .Exceptions import *
 
@@ -27,7 +28,7 @@ class Perceptron:
     # bare init function becuase of the option to import exsisting network from a folder
     def __init__(self):
         #initalise a map of string to function for activation fuctions
-        self.activationLookup={"relu":relu,"liniar":self.liniar,"sigmoid":sigmoid}
+        self.activationLookup={"relu":relu,"linear":self.linear,"sigmoid":sigmoid,"tanh":tanh}
 
     #create a new neural network based on hyperperameters given as arguments
     def newNetwork(self,inputSize,outputSize,nHidden,activation):
@@ -73,7 +74,7 @@ class Perceptron:
 
     #liniar function returns input
     @function
-    def liniar(self,x):
+    def linear(self,x):
         return(x)
 
     #evaluates the network for a list of inputs

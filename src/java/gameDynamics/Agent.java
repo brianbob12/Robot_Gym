@@ -65,6 +65,7 @@ public class Agent extends Competitor {
 	public void importNetwork(String path) throws IOException {
 		//read hyper.txt for general data
 		List<String> hyperData=FileManager.readByLine(path+"/hyper.txt");
+		
 		String[]  hiddenData=hyperData.get(2).split(",");
 		this.nHidden=new ArrayList<Integer>();
 		for(String i: hiddenData) {
@@ -124,8 +125,11 @@ public class Agent extends Competitor {
 					if(this.activation.get(i-1).equals("sigmoid")) {
 						nums.get(j).set(k, this.sigmoid(nums.get(j).get(k)));
 					}
-					else if(this.activation.get(i-1).equals("liniar")) {
+					else if(this.activation.get(i-1).equals("linear")) {
 						continue;
+					}
+					else if(this.activation.get(i-1).equals("tanh")) {
+						nums.get(j).set(k, Math.tanh(nums.get(j).get(k)));
 					}
 				}
 			};
@@ -177,6 +181,7 @@ public class Agent extends Competitor {
 	}
 	
 	//the sigmoid function for evaluating neural networks
+	//THIS MAY NOW BE REDUNDANR
 	private static double sigmoid(double x) {
 		return (1/(1+Math.pow(Math.E,-1*x)));
 	}
@@ -440,4 +445,6 @@ public class Agent extends Competitor {
 			return this.nextState;
 		}
 	}
+	
+	
 }
