@@ -49,38 +49,38 @@ public class TestingTraining {
 		
 		Level testingLevel=new Level();
 		testingLevel.trainingLevel=true;
-		testingLevel.epsilon=0.5f;//this is very important this changes the frequency of random actions in the agents
+		testingLevel.epsilon=0.02f;//this is very important this changes the frequency of random actions in the agents
 		
 		GameObject floor=new GameObject(100,30,50,10,false,false,testingLevel);
 		floor.color=Color.black;
 		floor.type=objectType.WALKABLE;
 		testingLevel.addObject(floor);
 		
-		GameObject plat1=new GameObject(180,30,50,10,false,false,testingLevel);
+		GameObject plat1=new GameObject(170,30,50,10,false,false,testingLevel);
 		plat1.color=Color.black;
 		plat1.type=objectType.WALKABLE;
 		testingLevel.addObject(plat1);
 		
-		GameObject plat2=new GameObject(260,30,20,10,false,false,testingLevel);
+		GameObject plat2=new GameObject(240,30,20,10,false,false,testingLevel);
 		plat2.color=Color.black;
 		plat2.type=objectType.WALKABLE;
 		testingLevel.addObject(plat2);
 		
-		GameObject plat3=new GameObject(310,30,50,10,false,false,testingLevel);
+		GameObject plat3=new GameObject(280,30,50,10,false,false,testingLevel);
 		plat3.color=Color.black;
 		plat3.type=objectType.WALKABLE;
 		testingLevel.addObject(plat3);
 		
-		testingLevel.setEndGoal(360);
+		testingLevel.setEndGoal(310);
 		
 		
 		
 		//adding agents
-		int numberOfAgents=50;
+		int numberOfAgents=60;
 		List<Agent> agents= new ArrayList<Agent>();
 		//first agent
 		Agent a = new Agent(120,45,testingLevel);
-		a.name="A0";
+
 		try {
 			a.importNetwork("playData/agents/a0/net1");
 		} catch (IOException e) {
@@ -93,7 +93,9 @@ public class TestingTraining {
 		
 		for(int i=1;i<numberOfAgents;i++) {
 			//subsequent agents
-			testingLevel.addAgent(a.middleCopy());
+			Agent b=a.middleCopy();
+			agents.add(b);
+			testingLevel.addAgent(b);
 		}
 		
 		

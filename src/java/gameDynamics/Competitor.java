@@ -17,14 +17,16 @@ import gameDynamics.GameObject.objectType;
  */
 public abstract class Competitor extends Destructible {
 	
-	public float moveScore;//score derived from moving
-	public float enemiesScore;//score derived from killing enemies
+	private float moveScore;//score derived from moving
+	private float enemiesScore;//score derived from killing enemies
+	private float jumpScore;//score dirived from jumping
 	public float xOffset;//holds the original x position of the Competitor for score calculations.
 	public boolean finished;
 	public float speed=(float)0.6;//walking speed of competitor
 	public float jumpForce=(float) 2.0;//velocity added through jumping
 	public int jumpDelay=5;
 	private int jumpCount=0;
+	private float jumpReward=-0.11f;//this is the cost for jumping to help the agents act more human like
 	private float jumpContactThreashold=0.01f;//the minimum distance to the floor to  jump needs to be higher than buffer in GameObject
 	
 	public Competitor(float x, float y, float width, float height,Level level, float maxHealth) {
@@ -32,6 +34,7 @@ public abstract class Competitor extends Destructible {
 		this.xOffset=x;
 		this.enemiesScore=0;
 		this.moveScore=0;
+		this.jumpScore=0;
 		this.type=objectType.ALLY;
 	}
 	
@@ -59,6 +62,7 @@ public abstract class Competitor extends Destructible {
 			if(actionB==1&&this.jumpCount>=this.jumpDelay) {
 				this.vy=this.jumpForce;
 				this.jumpCount=0;
+				this.jumpScore+=this.jumpReward;
 			}
 			
 			super.move();
@@ -83,11 +87,13 @@ public abstract class Competitor extends Destructible {
 		float moveScoreWeight=(float) 0.01;
 		float enemiesScoreWeight=1;
 		float finishedScoreWeight=1;
-		float out=this.moveScore*moveScoreWeight+this.enemiesScore+enemiesScoreWeight;
+		float jumpScoreWeight=1;
+		float out=this.moveScore*moveScoreWeight+this.enemiesScore+enemiesScoreWeight+jumpScoreWeight*jumpScore;
 		
 		if(this.finished) {
 			out+=1000*finishedScoreWeight;
 		}
+		
 		return out;
 	}
 	
