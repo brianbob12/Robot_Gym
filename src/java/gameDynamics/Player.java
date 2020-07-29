@@ -47,4 +47,8 @@ public class Player extends Competitor{
 	public int choseActionC() {
 		return 0;
 	}
+	@Override
+	public void die() {
+		
+	}
 }

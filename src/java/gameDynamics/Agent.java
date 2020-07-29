@@ -57,6 +57,27 @@ public class Agent extends Competitor {
 	private float lastScore;
 	//used in training
 	
+	//getters and setters
+	protected void setWeights(List<Matrix> w) {
+		this.weights=w;
+	}
+	protected void setBiases(List<Matrix> b) {
+		this.biases=b;
+	}
+	protected void setNHidden(List<Integer> h) {
+		this.nHidden=h;
+	}
+	protected void setActivation(List<String> a) {
+		this.activation=a;
+	}
+	protected void setStateSpace(int s) {
+		this.stateSpace=s;
+	}
+	protected void setActionSpace(int a) {
+		this.actionSpace=a;
+	}
+
+	
 	public Agent(float x, float y, Level level) {
 		super(x, y, 10F, 20F, level, 100F);
 	}
@@ -157,7 +178,7 @@ public class Agent extends Competitor {
 	//keeps everything as float
 	//returns output layer
 	
-	private List<Double> evaluateNetwork(List<Double> inp) {
+	private List<Double> evaluateNetwork(List<Double> inp) throws IndexOutOfBoundsException{
 		List<Matrix> layerVals=new ArrayList<Matrix>();//stores layer values
 		
 		//convert inp to matrix
@@ -170,7 +191,7 @@ public class Agent extends Competitor {
 		layerVals.get(0).setData(inpData);
 		//for each hidden layer and the output layer
 		for(int i=1;i<this.nHidden.size()+2;i++) {
-			layerVals.add(layerVals.get(i-1).multiply(this.weights.get(i-1)).add(this.biases.get(i-1)));
+			layerVals.add(layerVals.get(i-1).multiply(this.weights.get(i-1)).add(this.biases.get(i-1)));//throws index out of bounds
 			//apply activation function
 			List<List<Double>> nums=layerVals.get(i).getData();
 			for(int j=0;j<nums.size();j++) {
@@ -307,17 +328,25 @@ public class Agent extends Competitor {
 		int oldActionB=this.selectedActionB;
 		int oldActionC=this.selectedActionC;
 		//evaluate network
-		List<Double> rawOutput=this.evaluateNetwork(networkInput);
-		
-		//take argmax of neural network
-		int macroAction=this.argMax(rawOutput);
-		this.selectedActionA=macroAction%3;
-		macroAction-=this.selectedActionA;
-		macroAction=macroAction/3;
-		this.selectedActionB=macroAction%2;
-		macroAction-=macroAction-this.selectedActionB;
-		macroAction=macroAction/2;
-		this.selectedActionC=macroAction;
+		try {
+			List<Double> rawOutput=this.evaluateNetwork(networkInput);
+			//take argmax of neural network
+			int macroAction=this.argMax(rawOutput);
+			this.selectedActionA=macroAction%3;
+			macroAction-=this.selectedActionA;
+			macroAction=macroAction/3;
+			this.selectedActionB=macroAction%2;
+			macroAction-=macroAction-this.selectedActionB;
+			macroAction=macroAction/2;
+			this.selectedActionC=macroAction;
+		}
+		catch(IndexOutOfBoundsException e) {
+			System.out.println("NETWORK EVALUATION ERROR");
+			System.out.println(e);
+			this.selectedActionA=oldActionA;
+			this.selectedActionB=oldActionB;
+			this.selectedActionC=oldActionC;
+		}
 		
 		
 		if (this.training) {
@@ -389,7 +418,7 @@ public class Agent extends Competitor {
 	//export data upon death
 	@Override
 	public void die() {
-		super.die();
+		this.dead=true;
 	}
 	
 	//exports the saved experience data
@@ -401,6 +430,21 @@ public class Agent extends Competitor {
 			toExport.add(point.toString());
 		}
 		FileManager.writeToTxt(path, toExport);
+	}
+	
+	//produces a copy of the agent sharing the same network and level but not the same grid.
+	public Agent middleCopy() {
+		Agent out= new Agent(this.x,this.y,this.level);
+		//just passing pointers here
+		out.setWeights(this.weights);
+		out.setBiases(this.biases);
+		out.setNHidden(this.nHidden);
+		out.setActivation(this.activation);
+		out.setStateSpace(this.stateSpace);
+		out.setActionSpace(this.actionSpace);
+		
+		return out;
+		
 	}
 	
 	public void setEpsilon(float val) {

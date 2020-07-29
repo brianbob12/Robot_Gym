@@ -49,31 +49,51 @@ public class TestingTraining {
 		
 		Level testingLevel=new Level();
 		testingLevel.trainingLevel=true;
-		testingLevel.epsilon=0f;//this is very important this changes the frequency of random actions in the agents
+		testingLevel.epsilon=0.5f;//this is very important this changes the frequency of random actions in the agents
 		
-		GameObject floor=new GameObject(100,30,200,10,false,false,testingLevel);
+		GameObject floor=new GameObject(100,30,50,10,false,false,testingLevel);
 		floor.color=Color.black;
 		floor.type=objectType.WALKABLE;
 		testingLevel.addObject(floor);
-		testingLevel.setEndGoal(150);
+		
+		GameObject plat1=new GameObject(180,30,50,10,false,false,testingLevel);
+		plat1.color=Color.black;
+		plat1.type=objectType.WALKABLE;
+		testingLevel.addObject(plat1);
+		
+		GameObject plat2=new GameObject(260,30,20,10,false,false,testingLevel);
+		plat2.color=Color.black;
+		plat2.type=objectType.WALKABLE;
+		testingLevel.addObject(plat2);
+		
+		GameObject plat3=new GameObject(310,30,50,10,false,false,testingLevel);
+		plat3.color=Color.black;
+		plat3.type=objectType.WALKABLE;
+		testingLevel.addObject(plat3);
+		
+		testingLevel.setEndGoal(360);
 		
 		
 		
 		//adding agents
-		int numberOfAgents=1;
+		int numberOfAgents=50;
 		List<Agent> agents= new ArrayList<Agent>();
-		for(int i=0;i<numberOfAgents;i++) {
-			Agent a = new Agent(120,45,testingLevel);
-			a.name="A"+numberOfAgents;
-			try {
-				a.importNetwork("playData/agents/a0/net1");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			a.color=Color.green;
-			agents.add(a);
-			testingLevel.addAgent(a);
+		//first agent
+		Agent a = new Agent(120,45,testingLevel);
+		a.name="A0";
+		try {
+			a.importNetwork("playData/agents/a0/net1");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		a.color=Color.green;
+		agents.add(a);
+		testingLevel.addAgent(a);
+		
+		for(int i=1;i<numberOfAgents;i++) {
+			//subsequent agents
+			testingLevel.addAgent(a.middleCopy());
 		}
 		
 		
@@ -123,17 +143,17 @@ public class TestingTraining {
 		}
 		
 		//export data
-		//int i=0;
-		//for(Agent agent: agents) {
-		//	try {
-		//		agent.exportData("playData/data/g"+i+".txt");
-		//	} catch (IOException e) {
-		//		// TODO Auto-generated catch block
-		//		e.printStackTrace();
-		//	}
-		//	i+=1;
-		//}
-		//System.out.println("done");
+		int i=0;
+		for(Agent agent: agents) {
+			try {
+				agent.exportData("playData/data/g"+i+".txt");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			i+=1;
+		}
+		System.out.println("done");
 	}
 
 }

@@ -41,7 +41,7 @@ public abstract class Competitor extends Destructible {
 		float oldX=this.x;
 		float oldY=this.y;
 		
-		if(!this.finished) {
+		if(!this.finished&&!this.dead) {
 			
 			int actionA=this.choseActionA();
 			int actionB=this.choseActionB();
@@ -60,13 +60,21 @@ public abstract class Competitor extends Destructible {
 				this.vy=this.jumpForce;
 				this.jumpCount=0;
 			}
+			
 			super.move();
+			//check for finished level
 			if(this.x>level.getEndGoal()) {
 				this.finished=true;
+			}
+			
+			//check for fall to zero
+			if(this.y<=0) {
+				this.die();
 			}
 		}
 		
 		this.moveScore=this.x-this.xOffset;
+		
 	}
 	//returns the total score
 	public float getTotalScore() {
