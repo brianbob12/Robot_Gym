@@ -87,7 +87,7 @@ public class Agent extends Competitor {
 		for(int j=0;j<this.nHidden.get(0);j++) {//reshape list
 			List<Double> tad2=new ArrayList<Double>();
 			for(int k=0;k<this.stateSpace;k++) {
-				tad2.add((double)raw.get(j*this.stateSpace+k));
+				tad2.add((double)raw.get(k*this.nHidden.get(0)+j));
 			}
 			tad.add(tad2);
 		}
@@ -111,7 +111,7 @@ public class Agent extends Competitor {
 			for(int j=0;j<this.nHidden.get(i);j++) {//reshape the list
 				List<Double> tad2=new ArrayList<Double>();
 				for(int k=0;k<this.nHidden.get(i-1);k++) {
-					tad2.add((double)raw.get(j*this.nHidden.get(i)+k));
+					tad2.add((double)raw.get(k*this.nHidden.get(i)+j));
 				}
 				tad.add(tad2);
 			}
@@ -136,7 +136,7 @@ public class Agent extends Competitor {
 		for(int j=0;j<this.actionSpace;j++) {//reshape list
 			List<Double> tad2=new ArrayList<Double>();
 			for(int k=0;k<this.nHidden.get(this.nHidden.size()-1);k++) {
-				tad2.add((double)raw.get(j*this.actionSpace+k));
+				tad2.add((double)raw.get(k*this.actionSpace+j));
 			}
 			tad.add(tad2);
 		}
@@ -201,7 +201,6 @@ public class Agent extends Competitor {
 	}
 	//returns grid output for visible squares a flattened array
 	private List<Integer> observe() {
-		//System.out.println(this.moved);
 		if(!this.moved) {
 			//grid update is applicable
 			this.myGrid.updateGrid();
@@ -217,8 +216,7 @@ public class Agent extends Competitor {
 		float startPointY=this.y-(this.nGv/2)*this.sG;
 		float endPointX=this.x+this.width+(this.nGh/2)*this.sG;
 		float endPointY=this.y+(this.nGv/2)*this.sG;
-		//debug
-		//System.out.println("("+this.x+","+this.y+") "+startPointX+","+startPointY+";"+endPointX+","+endPointY);
+
 		//for all of the relevant cells
 		for(float tracerX=startPointX;tracerX<endPointX;tracerX+=this.sG) {
 			for(float tracerY=startPointY;tracerY<endPointY;tracerY+=this.sG) {
@@ -308,11 +306,8 @@ public class Agent extends Competitor {
 		int oldActionA=this.selectedActionA;
 		int oldActionB=this.selectedActionB;
 		int oldActionC=this.selectedActionC;
-		
 		//evaluate network
 		List<Double> rawOutput=this.evaluateNetwork(networkInput);
-		//debug
-		System.out.println(rawOutput);
 		
 		//take argmax of neural network
 		int macroAction=this.argMax(rawOutput);
