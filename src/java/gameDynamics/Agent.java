@@ -339,40 +339,42 @@ public class Agent extends Competitor {
 			macroAction-=macroAction-this.selectedActionB;
 			macroAction=macroAction/2;
 			this.selectedActionC=macroAction;
+			if (this.training) {
+				//log history
+				if(this.dead||this.finished) {
+					this.lastExport=true;
+				}
+				List<Integer> stateForExport=new ArrayList<Integer>();//flattened int of this.frames
+				for(List<Integer> i:this.frames) {
+					for(int j:i) {
+						stateForExport.add(j);
+					}
+				}
+				if(stateForExport.size()==0) {
+					//something has gone horribly wrong
+					System.out.println("empy flat state");
+					return;
+				}
+				//System.out.println(stateForExport);
+				if(this.lastState!=null) {
+					float reward=this.getTotalScore()-this.lastScore;
+					this.saveData(stateForExport,oldActionA,oldActionB,oldActionC,reward,this.lastState,this.selectedActionA,this.selectedActionB,this.selectedActionC);
+				}
+				this.lastState=stateForExport;
+				this.lastScore=this.getTotalScore();
+			}
 		}
 		catch(IndexOutOfBoundsException e) {
 			System.out.println("NETWORK EVALUATION ERROR");
 			System.out.println(e);
+			System.out.println(networkInput.size());
 			this.selectedActionA=oldActionA;
 			this.selectedActionB=oldActionB;
 			this.selectedActionC=oldActionC;
 		}
 		
 		
-		if (this.training) {
-			//log history
-			if(this.dead||this.finished) {
-				this.lastExport=true;
-			}
-			List<Integer> stateForExport=new ArrayList<Integer>();//flattened int of this.frames
-			for(List<Integer> i:this.frames) {
-				for(int j:i) {
-					stateForExport.add(j);
-				}
-			}
-			if(stateForExport.size()==0) {
-				//something has gone horribly wrong
-				System.out.println("empy flat state");
-				return;
-			}
-			//System.out.println(stateForExport);
-			if(this.lastState!=null) {
-				float reward=this.getTotalScore()-this.lastScore;
-				this.saveData(stateForExport,oldActionA,oldActionB,oldActionC,reward,this.lastState,this.selectedActionA,this.selectedActionB,this.selectedActionC);
-			}
-			this.lastState=stateForExport;
-			this.lastScore=this.getTotalScore();
-		}
+		
 		
 		//clear frames
 		this.clearFrames();
@@ -406,11 +408,11 @@ public class Agent extends Competitor {
 		AgentDataPoint tad=new AgentDataPoint(state,action,reward,statePrime,nextAction);
 		//decide if relevant
 		//THIS IS VERY INFLUENTIAL on the training process
-		for(AgentDataPoint i: this.data) {
-			if(tad.similar(i)) {
-				return;
-			}
-		}
+		//for(AgentDataPoint i: this.data) {
+		//	if(tad.similar(i)) {
+		//		return;
+		//	}
+		//}
 		this.data.add(tad);
 		
 	}

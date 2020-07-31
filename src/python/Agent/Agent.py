@@ -71,13 +71,9 @@ class Agent:
     #trains the agent networks
     #inputs a directory of a list of observation filled text files
     #https://arxiv.org/pdf/1509.06461.pdf
-    def trainAgent(self,path):
+    def loadTrainingData(self,path):
         data=[]#list of level data
-        #equate networks
-        copying=True#this does not have to be done every time
-        if(copying):
-            print("Copying Network 1")
-            network3=self.network1.deepcopy()
+
         #for each peice of level data there is a 2 dimentional float list [state,action,reward,state prime, action prime]
         for file in os.listdir(path):#iterate over all files
             #get data from files
@@ -91,9 +87,9 @@ class Agent:
 
         #setup training training data
         #setup arguments
-        x=[]#list of inputs
-        y=[]#list of target* values (it is a moving target that will become more accurate as training progresses)
-        yi=[]#for each training example the index of y[exapmle] that should be trained on
+        self.x=[]#list of inputs
+        self.y=[]#list of target* values (it is a moving target that will become more accurate as training progresses)
+        self.yi=[]#for each training example the index of y[exapmle] that should be trained on
 
         #iterate over all level examples
         #NOTE: the network only choses one action
@@ -108,20 +104,30 @@ class Agent:
                 observation[3]=[float(i) for i in observation[3]]
                 observation[4]=[float(i) for i in observation[4]]
                 #train
-                x.append(observation[0])# add state to x
+                self.x.append(observation[0])# add state to x
                 target=observation[2]+self.config["gamma"]*self.network2.evaluate([observation[3]])[0][observation[4].index(1)]
                 #observation[4].index(1) this converts one hot to index
-                y.append([int(i)*observation[2] for i in observation[1]])#the zeroes in action will multiply to zero only the one hot value will be multiplied by reward
-                yi.append(observation[1].index(1))#this means we will only be fitting the output for this action
+                self.y.append([int(i)*observation[2] for i in observation[1]])#the zeroes in action will multiply to zero only the one hot value will be multiplied by reward
+                self.yi.append(observation[1].index(1))#this means we will only be fitting the output for this action
                 #Q(state,action,net1weights)= reward + gamma*Q(nextState,nextAction,net2weights) THIS IS WHAT THE GOAL IS
 
+    def trainAgent(self):
+        print("Training Agent")
+
+        #equate networks
+        copying=True#this does not have to be done every time
+        if(copying):
+            print("Copying Network 1 to Network 3")
+            network3=self.network1.deepcopy()
+
         #TRAINING PROCEDURE
+        print("Training Network 1")
         for i in range(self.config["iterationsPerGame"]):
             #actually train the network
-            error=self.network1.train(x,y,yi,self.config["learningRate"],self.config["l2val"])
+            error=self.network1.train(self.x,self.y,self.yi,self.config["learningRate"],self.config["l2val"])
             print(str(i)+"\terror:"+str(float(error)))
 
         #copy over networks
         if (copying):
-            print("Copying Network 3")
+            print("Copying Network 3 to Network 2")
             self.network2=network3.deepcopy()

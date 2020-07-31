@@ -88,10 +88,14 @@ public abstract class Competitor extends Destructible {
 		float enemiesScoreWeight=1;
 		float finishedScoreWeight=1;
 		float jumpScoreWeight=1;
+		float deadScoreWeight=1;
 		float out=this.moveScore*moveScoreWeight+this.enemiesScore+enemiesScoreWeight+jumpScoreWeight*jumpScore;
 		
 		if(this.finished) {
 			out+=1000*finishedScoreWeight;
+		}
+		if(this.dead) {
+			out-=500*deadScoreWeight;
 		}
 		
 		return out;
