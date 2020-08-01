@@ -26,7 +26,7 @@ public abstract class Competitor extends Destructible {
 	public float jumpForce=(float) 2.0;//velocity added through jumping
 	public int jumpDelay=5;
 	private int jumpCount=0;
-	private float jumpReward=-0.11f;//this is the cost for jumping to help the agents act more human like
+	private float jumpReward=-0.05f;//this is the cost for jumping to help the agents act more human like
 	private float jumpContactThreashold=0.01f;//the minimum distance to the floor to  jump needs to be higher than buffer in GameObject
 	
 	public Competitor(float x, float y, float width, float height,Level level, float maxHealth) {

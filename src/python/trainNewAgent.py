@@ -66,7 +66,7 @@ def main(args):
         pass
 
     for i in range(iter):
-        print("Training:",iter)
+        print("Training:",i)
         agent.trainAgent()
     #export agent
     agent.export(path+"/"+newAgentDir)

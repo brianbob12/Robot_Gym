@@ -49,7 +49,7 @@ public class TestingTraining {
 		
 		Level testingLevel=new Level();
 		testingLevel.trainingLevel=true;
-		testingLevel.epsilon=0.15f;//this is very important this changes the frequency of random actions in the agents
+		testingLevel.epsilon=0.0f;//this is very important this changes the frequency of random actions in the agents
 		
 		GameObject floor=new GameObject(100,30,50,10,false,false,testingLevel);
 		floor.color=Color.black;
@@ -76,7 +76,7 @@ public class TestingTraining {
 		
 		
 		//adding agents
-		int numberOfAgents=120;
+		int numberOfAgents=1;
 		List<Agent> agents= new ArrayList<Agent>();
 		//first agent
 		Agent a = new Agent(120,45,testingLevel);

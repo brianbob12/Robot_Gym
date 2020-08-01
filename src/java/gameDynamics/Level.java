@@ -26,7 +26,7 @@ public class Level implements Serializable {
 	private float endGoal;//the x value that shows the end of the level
 	private float startPosition=0;
 	int levelSGS=3;//SGS is the number of frames in the agent's state
-	int agentUpdateTime=10;//the number of physics frames that the agents are updated
+	int agentUpdateTime=4;//the number of physics frames that the agents are updated
 	private int counter=0;//Counts physics updates up to agentUpdateTime NOTE: this MUST start on 0
 	public transient float epsilon=0F;
 	
