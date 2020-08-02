@@ -36,7 +36,7 @@ public class Agent extends Competitor {
 	private int nGh=12;//horizontal view range(grid space)
 	private int nGv=8;//vertical view range(grid space)
 	private int sG=7;//grid cell size in level space
-	private int SGS=1;//number of grid observations in the observed state
+	private int SGS=3;//number of grid observations in the observed state , this is reasigned in the Level objet
 	
 	//I think this is redundant... not sure
 	private List<List<Integer>> frames;//stores the grid outputs before evaluation max length of SGS
@@ -305,6 +305,10 @@ public class Agent extends Competitor {
 	public void addFrame() {
 		this.frames.add(this.observe());
 	}
+	//removes the first item from this.frames
+	public void popFrame() {
+		this.frames.remove(0);
+	}
 	
 	//requires this.frames.size()==SGS
 	//evaluates the network and sets a new action for the agent
@@ -373,12 +377,7 @@ public class Agent extends Competitor {
 			this.selectedActionB=oldActionB;
 			this.selectedActionC=oldActionC;
 		}
-		
-		
-		
-		
-		//clear frames
-		this.clearFrames();
+
 	}
 	
 	//exports the index of the highest value in input

@@ -39,7 +39,8 @@ class Agent:
 
         #establish 2 neural networks for double deep Q learning
         self.network1=Net()
-        self.network1.newNetwork(864,18,[256,128,64,32],["tanh","tanh","tanh","linear","linear"])
+        #there are three sets of observations each of size 864
+        self.network1.newNetwork(864*3,18,[256,128,64,32],["tanh","tanh","tanh","linear","linear"])
         #network2 is a deepcopy of network1
         self.network2=self.network1.deepcopy()
 
@@ -110,6 +111,7 @@ class Agent:
                 self.y.append([int(i)*observation[2] for i in observation[1]])#the zeroes in action will multiply to zero only the one hot value will be multiplied by reward
                 self.yi.append(observation[1].index(1))#this means we will only be fitting the output for this action
                 #Q(state,action,net1weights)= reward + gamma*Q(nextState,nextAction,net2weights) THIS IS WHAT THE GOAL IS
+        print("Found "+str(len(self.x))+ " Training Examples")
 
     def trainAgent(self):
         print("Training Agent")

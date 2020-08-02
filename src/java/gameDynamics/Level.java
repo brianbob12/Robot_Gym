@@ -26,7 +26,7 @@ public class Level implements Serializable {
 	private float endGoal;//the x value that shows the end of the level
 	private float startPosition=0;
 	int levelSGS=3;//SGS is the number of frames in the agent's state
-	int agentUpdateTime=4;//the number of physics frames that the agents are updated
+	int agentUpdateTime=1;//the number of physics frames that the agents are updated
 	private int counter=0;//Counts physics updates up to agentUpdateTime NOTE: this MUST start on 0
 	public transient float epsilon=0F;
 	
@@ -82,22 +82,16 @@ public class Level implements Serializable {
 		this.counter+=1;
 		this.counter%=this.agentUpdateTime;
 		//agent stuff
-		if(this.counter==0) {
-			//update agents
-			for(Agent sel: this.agents) {
-				if(!sel.lastExport) {
+		for(Agent sel: this.agents) {
+			if(!sel.lastExport) {//if agent not done yet
+				//cycle observations
+				if(counter==0||agentUpdateTime-counter<levelSGS) {
 					sel.addFrame();
-					sel.newAction();
+					sel.popFrame();
 				}
-			}
-		}
-		//record actions approaching the next agent update
-		for(int i=1;i<levelSGS;i++) {
-			if(this.counter==this.agentUpdateTime-i) {
-				for(Agent sel: this.agents) {
-					if(!sel.lastExport) {
-						sel.addFrame();
-					}
+				//if time to move
+				if(this.counter==0) {
+					sel.newAction();
 				}
 			}
 		}
@@ -106,6 +100,10 @@ public class Level implements Serializable {
 	public void setUpAgents() {
 		for(Agent sel: this.agents) {
 			sel.setupGrid();
+			//add frames approaching the first execution
+			for(int i=0;i<levelSGS;i++) {
+				sel.addFrame();
+			}
 		}
 	}
 	

@@ -17,7 +17,7 @@ public class Grid {
 	
 	//Properties shared across all grids
 	private final float sG=7;// level-coordinate space length of each grid cell
-	private final float aG=0.25f;//cell activation, the amount of the cell that needs to be covered for it to activate the cell
+	private final float aG=0.15f;//cell activation, the amount of the cell that needs to be covered for it to activate the cell
 	
 	
 	private float offsetX;//the offset of the grid from integers multiples of sG

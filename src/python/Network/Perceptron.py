@@ -13,6 +13,7 @@ from tensorflow.keras.regularizers import l2
 from tensorflow.keras.optimizers import Adam
 from tensorflow.nn import relu,sigmoid
 from tensorflow.math import tanh
+from tensorflow import function
 import numpy#this is actually a dependancy of tensorflow
 import struct#for export and import
 from .Exceptions import *
