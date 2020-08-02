@@ -330,7 +330,7 @@ public class Agent extends Competitor {
 		//evaluate network
 		try {
 			List<Double> rawOutput=this.evaluateNetwork(networkInput);
-			System.out.println(rawOutput);
+			//System.out.println(rawOutput);
 			//take argmax of neural network
 			int macroAction=this.argMax(rawOutput);
 			this.selectedActionA=macroAction%3;

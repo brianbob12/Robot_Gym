@@ -58,13 +58,14 @@ public abstract class Competitor extends Destructible {
 			}
 			if(this.onPlatform()) {
 				this.jumpCount+=1;
-			}
-			if(actionB==1&&this.jumpCount>=this.jumpDelay) {
-				this.vy=this.jumpForce;
-				this.jumpCount=0;
-				this.jumpScore+=this.jumpReward;
-			}
 			
+				if(actionB==1&&this.jumpCount>=this.jumpDelay) {
+					this.vy=this.jumpForce;
+					this.jumpCount=0;
+					this.jumpScore+=this.jumpReward;
+				}
+			}
+				
 			super.move();
 			//check for finished level
 			if(this.x>level.getEndGoal()) {
