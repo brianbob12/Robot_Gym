@@ -111,7 +111,7 @@ class Perceptron:
                 g.watch(self.getTrainableVariables())
 
             #calculate error
-            guess=self.evaluate(X)
+            guess=self.evaluate([[constant(j) for j in i] for i in X])#convert everything in x to tensorflow format
             #calculate error using sqared error
             error=0
             for i in range(len(Y)):

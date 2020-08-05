@@ -16,7 +16,7 @@ import java.util.*;
 public class Grid {
 	
 	//Properties shared across all grids
-	private final float sG=7;// level-coordinate space length of each grid cell
+	private final float sG=3;// level-coordinate space length of each grid cell
 	private final float aG=0.15f;//cell activation, the amount of the cell that needs to be covered for it to activate the cell
 	
 	

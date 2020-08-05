@@ -70,6 +70,7 @@ def main(args):
         agent.trainAgent()
     #export agent
     agent.export(path+"/"+newAgentDir)
+    exit(1)
 
 
 

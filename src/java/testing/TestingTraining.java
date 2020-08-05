@@ -22,6 +22,7 @@ import gameDynamics.Level;
 import gameDynamics.Player;
 import gameDynamics.GameObject.objectType;
 import tools.Keyboard;
+import tools.PythonManager;
 import userInterface.GameArea;
 
 /**
@@ -49,7 +50,7 @@ public class TestingTraining {
 		
 		Level testingLevel=new Level();
 		testingLevel.trainingLevel=true;
-		testingLevel.epsilon=0.99f;//this is very important this changes the frequency of random actions in the agents
+		testingLevel.epsilon=0.45f;//this is very important this changes the frequency of random actions in the agents
 		
 		GameObject floor=new GameObject(100,30,50,10,false,false,testingLevel);
 		floor.color=Color.black;
@@ -76,13 +77,13 @@ public class TestingTraining {
 		
 		
 		//adding agents
-		int numberOfAgents=30;
+		int numberOfAgents=10;
 		List<Agent> agents= new ArrayList<Agent>();
 		//first agent
 		Agent a = new Agent(120,45,testingLevel);
 
 		try {
-			a.importNetwork("playData/agents/a0B/net1");
+			a.importNetwork("playData/agents/a0A/net1");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -102,12 +103,6 @@ public class TestingTraining {
 		testingLevel.setUpAgents();
 		
 		GameObject player=new Player(110,45,testingLevel,myKeyboard);
-		try {
-			player.setDisplayImage(ImageIO.read(new File("assets/images/PlayerPlaceholder.png")));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		testingLevel.addObject(player);//player should always be added after agents
 		
 		GameArea testingLevelView=new GameArea(testingLevel);
@@ -118,7 +113,7 @@ public class TestingTraining {
 		testingLevelView.dynamicViewCenter=true;
 		testingLevelView.viewCenterOffsetY=-30;
 		testingLevelView.viewCenterOffsetX=-50;
-		//testingLevelView.setBackgroundImage("assets/images/BackgroundBlue.png", 50);
+		testingLevelView.setBackgroundImage("assets/images/wereBackground (2).png", 10);
 		frame.add(testingLevelView);
 		
 		int trainingFrames=1200;//the ammount of frames for training
@@ -143,7 +138,7 @@ public class TestingTraining {
 				frame.repaint();
 			}
 		}
-		
+		System.out.println("Started Saving");
 		//export data
 		int i=0;
 		for(Agent agent: agents) {
@@ -155,7 +150,28 @@ public class TestingTraining {
 			}
 			i+=1;
 		}
-		System.out.println("done");
+		System.out.println("Begining Training");
+		
+		try {
+			Process process=PythonManager.trainAgent("playData/agents/a0B", "playData/agents/a1B","playData/data", 1);
+			while(!PythonManager.finishedSuccessfully(process)) {
+				//waiting for process to finish
+				int x=process.getInputStream().read();
+				if(x==-1) {//end of input stream
+					continue;
+				}
+				else {
+					System.out.print((char) x);
+					if(x==0) {
+						System.out.print("\t");
+					}
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Finished Training");
 	}
 
 }

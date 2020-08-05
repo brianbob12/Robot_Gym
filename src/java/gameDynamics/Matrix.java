@@ -59,7 +59,6 @@ public class Matrix {
 	
 	//multiplies this by the given argument matrix. 
 	public Matrix multiply(Matrix transformation) {
-		
 		Matrix product=new Matrix(transformation.nCols,this.nRows);
 		List<List<Double>> newData=new ArrayList<List<Double>>();
 		List<List<Double>> rows=new ArrayList<List<Double>>();//store the rows of this matrix to avoid repetition

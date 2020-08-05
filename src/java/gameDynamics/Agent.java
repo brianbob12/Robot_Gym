@@ -35,7 +35,7 @@ public class Agent extends Competitor {
 	private transient Grid myGrid;
 	private int nGh=12;//horizontal view range(grid space)
 	private int nGv=8;//vertical view range(grid space)
-	private int sG=7;//grid cell size in level space
+	private int sG=3;//grid cell size in level space
 	private int SGS=3;//number of grid observations in the observed state , this is reasigned in the Level objet
 	
 	//I think this is redundant... not sure
@@ -76,10 +76,29 @@ public class Agent extends Competitor {
 	protected void setActionSpace(int a) {
 		this.actionSpace=a;
 	}
-
+	//returns this.SGS
+	public int getSGS() {
+		return this.SGS;
+	}
+	public void setSGS(int val) {
+		this.SGS=val;
+		this.stateSpace=288*val;
+	}
+	//this.frames interactions
+	public void clearFrames() {
+		this.frames=new ArrayList<List<Integer>>();
+	}
+	//adds an observation to the frames
+	public void addFrame() {
+		this.frames.add(this.observe());
+	}
+	//removes the first item from this.frames
+	public void popFrame() {
+		this.frames.remove(0);
+	}
 	
 	public Agent(float x, float y, Level level) {
-		super(x, y, 10F, 20F, level, 100F);
+		super(x, y, 10F, 25F, level, 100F);
 	}
 	
 	//read network from csv
@@ -248,7 +267,6 @@ public class Agent extends Competitor {
 				}
 			}
 		}
-		//System.out.println(output);
 		return output;
 	}
 	
@@ -290,25 +308,7 @@ public class Agent extends Competitor {
 		return this.selectedActionC;
 	}
 	
-	//returns this.SGS
-	public int getSGS() {
-		return this.SGS;
-	}
-	public void setSGS(int val) {
-		this.SGS=val;
-	}
-	//this.frames interactions
-	public void clearFrames() {
-		this.frames=new ArrayList<List<Integer>>();
-	}
-	//adds an observation to the frames
-	public void addFrame() {
-		this.frames.add(this.observe());
-	}
-	//removes the first item from this.frames
-	public void popFrame() {
-		this.frames.remove(0);
-	}
+	
 	
 	//requires this.frames.size()==SGS
 	//evaluates the network and sets a new action for the agent
@@ -321,10 +321,13 @@ public class Agent extends Competitor {
 		}
 		//flatten frames
 		List<Double> networkInput=new ArrayList<Double>();
-		
+		List<Integer> stateForExport=new ArrayList<Integer>();
 		for(List<Integer> i:this.frames) {
 			for(int j:i) {
 				networkInput.add((double) j);
+				if(this.training) {
+					stateForExport.add(j);
+				}
 			}
 		}
 		//for potential data collection
@@ -349,18 +352,11 @@ public class Agent extends Competitor {
 				if(this.dead||this.finished) {
 					this.lastExport=true;
 				}
-				List<Integer> stateForExport=new ArrayList<Integer>();//flattened int of this.frames
-				for(List<Integer> i:this.frames) {
-					for(int j:i) {
-						stateForExport.add(j);
-					}
-				}
 				if(stateForExport.size()==0) {
 					//something has gone horribly wrong
 					System.out.println("empy flat state");
 					return;
 				}
-				//System.out.println(stateForExport);
 				if(this.lastState!=null) {
 					float reward=this.getTotalScore()-this.lastScore;
 					this.saveData(stateForExport,oldActionA,oldActionB,oldActionC,reward,this.lastState,this.selectedActionA,this.selectedActionB,this.selectedActionC);
@@ -371,7 +367,8 @@ public class Agent extends Competitor {
 		}
 		catch(IndexOutOfBoundsException e) {
 			System.out.println("NETWORK EVALUATION ERROR");
-			System.out.println(e);
+			//System.out.println(e);
+			e.printStackTrace();
 			System.out.println(networkInput.size());
 			this.selectedActionA=oldActionA;
 			this.selectedActionB=oldActionB;
