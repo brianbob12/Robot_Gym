@@ -77,7 +77,7 @@ public class TestingTraining {
 		
 		
 		//adding agents
-		int numberOfAgents=10;
+		int numberOfAgents=1;
 		List<Agent> agents= new ArrayList<Agent>();
 		//first agent
 		Agent a = new Agent(120,45,testingLevel);
@@ -114,6 +114,7 @@ public class TestingTraining {
 		testingLevelView.viewCenterOffsetY=-30;
 		testingLevelView.viewCenterOffsetX=-50;
 		testingLevelView.setBackgroundImage("assets/images/wereBackground (2).png", 10);
+		testingLevelView.setBackgroundLag(0.3f);
 		frame.add(testingLevelView);
 		
 		int trainingFrames=1200;//the ammount of frames for training

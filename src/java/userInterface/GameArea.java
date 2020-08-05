@@ -44,6 +44,8 @@ public class GameArea extends JPanel {
 	boolean backroundTex=false;//if there is an active background texture
 	private Image background;
 	private int backgroundLen;//length of the background texture in level space
+	private float backgroundLag=1f;//the proportion of movement in the backgound compared to movement in the camera
+	
 	
 	public GameArea(Level level) {
 		this.level=level;
@@ -55,6 +57,10 @@ public class GameArea extends JPanel {
 	//for the level editor
 	public void setLevel(Level level) {
 		this.level=level;
+	}
+	
+	public void setBackgroundLag(float f) {
+		this.backgroundLag=f;
 	}
 	
 	public void paint(Graphics g) {
@@ -71,9 +77,9 @@ public class GameArea extends JPanel {
 		
 		//background stuff
 		if(this.backroundTex) {
-			for(int x=(int)(xLOW-xLOW%this.backgroundLen);x<xUP+(this.backgroundLen-xUP%this.backgroundLen);x+=this.backgroundLen) {
-				for(int y=(int)(yLOW-yLOW%this.backgroundLen);y<yUP+(this.backgroundLen-yUP%this.backgroundLen);y+=this.backgroundLen) {
-					g.drawImage(this.background,(int)((x-xLOW)*convRatioX),(int)(this.getHeight()-(y-yLOW)*convRatioY),(int) (this.backgroundLen*convRatioX),-(int) (this.backgroundLen*convRatioY),null);
+			for(int x=(int)(xLOW*backgroundLag-(xLOW*backgroundLag)%this.backgroundLen);x<xUP+(this.backgroundLen-(xUP%this.backgroundLen));x+=this.backgroundLen) {
+				for(int y=(int)(yLOW*backgroundLag-(yLOW*backgroundLag)%this.backgroundLen);y<yUP+(this.backgroundLen-yUP%this.backgroundLen);y+=this.backgroundLen) {
+					g.drawImage(this.background,(int)((x-xLOW*backgroundLag)*convRatioX),(int)(this.getHeight()-(y-yLOW*backgroundLag)*convRatioY),(int) (this.backgroundLen*convRatioX),-(int) (this.backgroundLen*convRatioY),null);
 				}
 			}
 		}
