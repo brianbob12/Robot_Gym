@@ -1,10 +1,7 @@
-# Robot_Gym(unfinished)
- A platformer where you are aided by clones learning from your behaviour. 
- I plan to implement double deep Q learning for the clone's control. 
- The agents will receive reward for:
- * Generally doing well in the game
-    * Progressing in levels
-    * Killing enemies
-    * Not dying
-* Doing actions similar to what the player did
+# Robot_Gym
+This is a tool to explore the implentation of the Double Deep Q Learning Algorithm.
+It is very useful for looking at reward hacking and perceptron optimization. 
 
+The environemnt is a very simple 2D physics engine written in java.
+
+The machine learning is written in python and uses Tensorflow.
